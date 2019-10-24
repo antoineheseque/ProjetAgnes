@@ -18,7 +18,7 @@ void yyerror(const char* s);
 %token<aInt> INT
 %token<aFloat> FLOAT
 %token PLUS MINUS MULTIPLY DIVIDE LEFT RIGHT
-%token NEWLINE
+%token SEPARATOR NEWLINE
 %left PLUS MINUS
 %left MULTIPLY DIVIDE
 
@@ -26,16 +26,16 @@ void yyerror(const char* s);
 %type<aFloat> floatLine
 
 %start rules
-
 /*** PARTIE DEUX ***/
 %%
 rules:
-	   | rules line
+	| rules line
 ;
 
-line: NEWLINE
-    | floatLine NEWLINE { printf("\tResult: %f\n", $1); }
-    | intLine NEWLINE { printf("\tResult: %i\n", $1); }
+line:
+	SEPARATOR
+  | floatLine line { printf("\tResult: %f\n", $1); }
+  | intLine line { printf("\tResult: %i\n", $1); }
 ;
 
 floatLine:

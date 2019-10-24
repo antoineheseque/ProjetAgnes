@@ -13,7 +13,7 @@
 [ \t]	; // ignore all whitespace
 [0-9]+\.[0-9]+ { yylval.aFloat = atof(yytext); return FLOAT;}
 [0-9]+ { yylval.aInt = atoi(yytext); return INT;}
-\n { return NEWLINE; }
+";" { return SEPARATOR; }
 "+" { return PLUS; }
 "-"	{ return MINUS; }
 "*"	{ return MULTIPLY; }
@@ -21,5 +21,6 @@
 "("	{ return LEFT; }
 ")"	{ return RIGHT; }
 [a-zA-Z0-9]+ {  }
+\n { } // Permet de ne pas prendre en compte les retour a la ligne en sortie
 . ;
 %%
