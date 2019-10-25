@@ -2,25 +2,49 @@
 %{
 	#include <stdlib.h>
 	#include <stdio.h>
+	#include <string>
 	#include "agnes.tab.h"
 
-	#define YY_DECL int yylex()
+	using namespace std;
+	int yyerror(char *);
+	int yylex(void);
 %}
-%option noyywrap
+%option yylineno
 
 /*** Rules SECTION ***/
 %%
-[ \t]	; // ignore all whitespace
-[0-9]+\.[0-9]+ { yylval.aFloat = atof(yytext); return FLOAT;}
-[0-9]+ { yylval.aInt = atoi(yytext); return INT;}
-";" { return SEPARATOR; }
-"+" { return PLUS; }
-"-"	{ return MINUS; }
-"*"	{ return MULTIPLY; }
-"/"	{ return DIVIDE; }
-"("	{ return LEFT; }
-")"	{ return RIGHT; }
-[a-zA-Z0-9]+ {  }
-\n { } // Permet de ne pas prendre en compte les retour a la ligne en sortie
-. ;
+[ \t\n]+	; // ignore all whitespace
+[a-zA-Z][a-zA-Z0-9]* 	{ strcpy(yylval.aString, yytext); return VARIABLE; }
+[0-9]+(\.[0-9]+)? 		{ yylval.aNumber = atof(yytext); return NUMBER; }
+";" 									{ return SEPARATOR; }
+"+" 									{ return PLUS; }
+"-"										{ return MINUS; }
+"*"										{ return MULTIPLY; }
+"/"										{ return DIVIDE; }
+"("										{ return LEFT; }
+")"										{ return RIGHT; }
+">>"									{ return PRINT; }
+"="										{ return EQUAL; }
+. 										{ }
 %%
+
+int yyerror(char* str) {
+	fprintf(stderr,"[Erreur][Ligne %d] %s\n",yylineno-1,str);
+}
+
+int yywrap(){}
+
+int main(int num_args, char** args) {
+	if(num_args  != 2) {
+		printf("[Erreur] Entrez la commande suivante: ./agnes.Ag nomFichier.a\n");
+		exit (0);
+	}
+	FILE* file = fopen(args[1],"r");
+	if(file == NULL) {
+		printf("[Erreur] Impossible d'ouvrir le fichier %s\n", args [1]);
+		exit (0);
+	}
+	yyin = file;   // now  flex  reads  from  file
+	yyparse();
+	fclose(file);
+}
