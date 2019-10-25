@@ -1,4 +1,18 @@
+/*
+  +--------------------------------+
+  |                                |
+  |        PROGRAMME AGNES         |
+  |                                |
+  +--------------------------------+
+*/
+/* Affichage d'un calcul simple avec '>>' */
 >>10*10/5.18;
+
+/* Affichage d'un calcul plus complexe avec parenthèses */
 >>10*23.49054/(5+242450.20392);
+
+/* Création d'une variable */
 aA=13+25;
->>aA;
+
+/* Affichage d'une variable multiplié par PI (3 fois) */
+>>aA*π*pi*PI;

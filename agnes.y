@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string>
 #include <map>
+#include <math.h>
 using namespace std;
 map<string,double> variable;
 
@@ -20,7 +21,7 @@ void UnknownVarError(string s);
 %token<aNumber> NUMBER
 %token<aString> VARIABLE
 %token PLUS MINUS MULTIPLY DIVIDE LEFT RIGHT
-%token SEPARATOR PRINT EQUAL
+%token SEPARATOR PRINT EQUAL PI
 %left PLUS MINUS
 %left MULTIPLY DIVIDE
 
@@ -41,6 +42,7 @@ line:
 
 number:
 		NUMBER 													{ $$ = $1; }
+		| PI 														{ $$ = M_PI; }
 	  | number PLUS number 						{ $$ = $1 + $3; }
 	  | number MINUS number						{ $$ = $1 - $3; }
 	  | number MULTIPLY number 				{ $$ = $1 * $3; }
