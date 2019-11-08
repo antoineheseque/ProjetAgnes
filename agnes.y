@@ -21,6 +21,7 @@ void UnknownVarError(string s);
 %token<aNumber> NUMBER
 %token<aString> VARIABLE
 %token PLUS MINUS MULTIPLY DIVIDE LEFT RIGHT
+%token COS SIN TAN
 %token SEPARATOR PRINT EQUAL PI
 %left PLUS MINUS
 %left MULTIPLY DIVIDE
@@ -41,16 +42,18 @@ line:
 ;
 
 number:
-		NUMBER 													{ $$ = $1; }
-		| PI 														{ $$ = M_PI; }
-	  | number PLUS number 						{ $$ = $1 + $3; }
-	  | number MINUS number						{ $$ = $1 - $3; }
-	  | number MULTIPLY number 				{ $$ = $1 * $3; }
-	  | number DIVIDE number					{ $$ = $1 / $3; }
-	  | LEFT number RIGHT 						{ $$ = $2; }
-		| VARIABLE											{ if(!variable.count($1)) UnknownVarError($1); else $$ = variable[$1]; }
+	NUMBER 													{ $$ = $1; }
+	| PI 														{ $$ = M_PI; }
+  | number PLUS number 						{ $$ = $1 + $3; }
+  | number MINUS number						{ $$ = $1 - $3; }
+  | number MULTIPLY number 				{ $$ = $1 * $3; }
+  | number DIVIDE number					{ $$ = $1 / $3; }
+  | LEFT number RIGHT 						{ $$ = $2; }
+	| VARIABLE											{ if(!variable.count($1)) UnknownVarError($1); else $$ = variable[$1]; }
+	| COS LEFT number RIGHT 				{ $$ = cos($3); }
+	| SIN LEFT number RIGHT 				{ $$ = sin($3); }
+	| TAN LEFT number RIGHT 				{ $$ = tan($3); }
 ;
-%%
 
 void  Div0Error(void) {
 	printf("[Erreur] Division par zero impossible\n");

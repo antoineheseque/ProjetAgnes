@@ -16,6 +16,9 @@
 [ \t\n]+											; // ignore all whitespace
 \/[*]([^*]|([*][^/]))*[*]+\/ 	{ } // printf("%s\n", yytext); A rajouter si on veux afficher les commentaires
 pi|PI|π												{ return PI; }
+"cos"													{ return COS; }
+"sin"													{ return SIN; }
+"tan"													{ return TAN; }
 [a-zA-Z][a-zA-Z0-9]* 					{ strcpy(yylval.aString, yytext); return VARIABLE; }
 [0-9]+(\.[0-9]+)? 						{ yylval.aNumber = atof(yytext); return NUMBER; }
 ";" 													{ return SEPARATOR; }
