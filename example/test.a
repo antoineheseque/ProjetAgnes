@@ -20,10 +20,10 @@ aA=13+25;
 /* Calcul d'un cosinus d'un cosinus */
 afficher sin(5)+cos(10*pi/180);
 
-/*Nombre entier entre 5 et 15 */
+/* Nombre entier entre 5 et 15 */
 >>nombre entier entre 5 et 15;
 >>e[5~15];
 
-/*Nombre décimal entre 5 et 15 */
+/* Nombre décimal entre 5 et 15 */
 >>nombre décimal entre 5 et 15;
 >>d[5~10];

@@ -40,7 +40,7 @@ pi|PI|π												{ return PI; }
 "en degré"|"°"		  					{ return DEG; }
 "e"|"entier"									{ return ENT; }
 "d"|"decimal"									{ return DEC; }
-"~"														{ return BETWEEN; }
+"~"|"et"											{ return BETWEEN; }
 [a-zA-Z][a-zA-Z0-9]* 					{ strcpy(yylval.aString, yytext); return VARIABLE; }
 [0-9]+(\.[0-9]+)? 						{ yylval.aNumber = atof(yytext); return NUMBER; }
 . 														{ }
