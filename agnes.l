@@ -16,16 +16,16 @@
 [ \t\n]+											; // ignore all whitespace
 \/[*]([^*]|([*][^/]))*[*]+\/ 	{ } // printf("%s\n", yytext); A rajouter si on veux afficher les commentaires
 pi|PI|π												{ return PI; }
-"cos"													{ return COS; }
-"sin"													{ return SIN; }
-"tan"													{ return TAN; }
-";" 													{ return SEPARATOR; }
+"cos"|"cosinus"								{ return COS; }
+"sin"|"sinus"									{ return SIN; }
+"tan"|"tangente"							{ return TAN; }
+";"|"point virgule" 					{ return SEPARATOR; }
 "+"|"plus" 										{ return PLUS; }
 "-"|"moins"								   	{ return MINUS; }
 "*"|"fois"|"multiplié par"		{ return MULTIPLY; }
 "/"|"divisé par"							{ return DIVIDE; }
-"("														{ return LEFT; }
-")"														{ return RIGHT; }
+"("|"parenthèse gauche"				{ return LEFT; }
+")"|"parenthèse droite"				{ return RIGHT; }
 ">>"|"afficher"								{ return PRINT; }
 "="|"egal"|"égal"							{ return EQUAL; }
 [a-zA-Z][a-zA-Z0-9]* 					{ strcpy(yylval.aString, yytext); return VARIABLE; }
