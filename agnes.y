@@ -54,6 +54,7 @@ number:
 	| SIN LEFT number RIGHT 				{ $$ = sin($3); }
 	| TAN LEFT number RIGHT 				{ $$ = tan($3); }
 ;
+%%
 
 void  Div0Error(void) {
 	printf("[Erreur] Division par zero impossible\n");

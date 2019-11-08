@@ -19,17 +19,17 @@ pi|PI|π												{ return PI; }
 "cos"													{ return COS; }
 "sin"													{ return SIN; }
 "tan"													{ return TAN; }
-[a-zA-Z][a-zA-Z0-9]* 					{ strcpy(yylval.aString, yytext); return VARIABLE; }
-[0-9]+(\.[0-9]+)? 						{ yylval.aNumber = atof(yytext); return NUMBER; }
 ";" 													{ return SEPARATOR; }
-"+" 													{ return PLUS; }
-"-"														{ return MINUS; }
-"*"														{ return MULTIPLY; }
-"/"														{ return DIVIDE; }
+"+"|"plus" 										{ return PLUS; }
+"-"|"moins"								   	{ return MINUS; }
+"*"|"fois"|"multiplié par"		{ return MULTIPLY; }
+"/"|"divisé par"							{ return DIVIDE; }
 "("														{ return LEFT; }
 ")"														{ return RIGHT; }
-">>"													{ return PRINT; }
-"="														{ return EQUAL; }
+">>"|"afficher"								{ return PRINT; }
+"="|"egal"|"égal"							{ return EQUAL; }
+[a-zA-Z][a-zA-Z0-9]* 					{ strcpy(yylval.aString, yytext); return VARIABLE; }
+[0-9]+(\.[0-9]+)? 						{ yylval.aNumber = atof(yytext); return NUMBER; }
 . 														{ }
 %%
 
