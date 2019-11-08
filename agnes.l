@@ -36,8 +36,8 @@ pi|PI|π												{ return PI; }
 "nombre décimal entre"				{ return RANDD; }
 "nombre entier entre"					{ return RANDE; }
 "concatener"|"fusionner"		  { return CONCATENATION; }
-"en randian"		  						{ return CONCATENATION; }
-"en degré"|"°"		  						{ return CONCATENATION; }
+"en randian"		  						{ return RAD; }
+"en degré"|"°"		  					{ return DG; }
 [a-zA-Z][a-zA-Z0-9]* 					{ strcpy(yylval.aString, yytext); return VARIABLE; }
 [0-9]+(\.[0-9]+)? 						{ yylval.aNumber = atof(yytext); return NUMBER; }
 . 														{ }
