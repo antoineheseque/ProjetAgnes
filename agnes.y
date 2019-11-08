@@ -5,6 +5,8 @@
 #include <map>
 #include <math.h>
 using namespace std;
+
+// Stockage des variables
 map<string,double> variable;
 
 extern int yyerror(char *);
@@ -18,18 +20,39 @@ void UnknownVarError(string s);
 	char aString[256];
 }
 
+/* Variable et adresses */
 %token<aNumber> NUMBER
 %token<aString> VARIABLE
-%token PLUS MINUS MULTIPLY DIVIDE LEFT RIGHT
+
+/* Math */
 %token COS SIN TAN
-%token SEPARATOR PRINT EQUAL PI
+%token PLUS MINUS MULTIPLY DIVIDE
+%token EQUAL PI
+%token RANDD RANDE
+%token CONCAT
+%token RAD DEG
+%token ENT DEC
+
+/* Parentheses */
+%token LP RP /* ( ) */
+%token LC RC /* [ ] */
+%token LA RA /* { } */
+
+/* Autre ... */
+%token SEPARATOR PRINT BETWEEN
+
+/* Gestion de l'associativité */
 %left PLUS MINUS
 %left MULTIPLY DIVIDE
 
+/* Gestion des types */
 %type<aNumber> number
+%type<aNumber> instructions
+%type<aNumber> functions
 
 %start lines
-/*** PARTIE DEUX ***/
+
+/*** GESTION DES REGLES A RESPECTER ***/
 %%
 lines:
 	lines line
@@ -42,18 +65,29 @@ line:
 ;
 
 number:
-	NUMBER 													{ $$ = $1; }
-	| PI 														{ $$ = M_PI; }
-  | number PLUS number 						{ $$ = $1 + $3; }
-  | number MINUS number						{ $$ = $1 - $3; }
-  | number MULTIPLY number 				{ $$ = $1 * $3; }
-  | number DIVIDE number					{ $$ = $1 / $3; }
-  | LEFT number RIGHT 						{ $$ = $2; }
-	| VARIABLE											{ if(!variable.count($1)) UnknownVarError($1); else $$ = variable[$1]; }
-	| COS LEFT number RIGHT 				{ $$ = cos($3); }
-	| SIN LEFT number RIGHT 				{ $$ = sin($3); }
-	| TAN LEFT number RIGHT 				{ $$ = tan($3); }
+	NUMBER 														{ $$ = $1; }
+	| PI 															{ $$ = M_PI; }
+  | LP number RP 										{ $$ = $2; }
+	| RANDE number PLUS number				{ int m = $4-$2; $$ = rand() % m + $2; }
+	| ENT LC number BETWEEN number RC { int m = $5-$3; $$ = rand() % m + $3; }
+	| instructions										{ $$ = $1; }
+	| functions												{ $$ = $1; }
+	| VARIABLE												{ if(!variable.count($1)) UnknownVarError($1); else $$ = variable[$1]; }
 ;
+
+instructions:
+	number PLUS number 						  	{ $$ = $1 + $3; }
+	| number MINUS number							{ $$ = $1 - $3; }
+	| number MULTIPLY number 					{ $$ = $1 * $3; }
+	| number DIVIDE number						{ $$ = $1 / $3; }
+;
+
+functions:
+	COS LP number RP 			  					{ $$ = cos($3); }
+	| SIN LP number RP 								{ $$ = sin($3); }
+	| TAN LP number RP 								{ $$ = tan($3); }
+;
+
 %%
 
 void  Div0Error(void) {

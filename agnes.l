@@ -21,23 +21,26 @@ pi|PI|π												{ return PI; }
 "sin"|"sinus"									{ return SIN; }
 "tan"|"tangente"							{ return TAN; }
 ";"|"point virgule" 					{ return SEPARATOR; }
-"+"|"plus"|"et" 							{ return PLUS; }
+"+"|"plus"			 							{ return PLUS; }
 "-"|"moins"								   	{ return MINUS; }
 "*"|"fois"|"multiplié par"		{ return MULTIPLY; }
 "/"|"divisé par"							{ return DIVIDE; }
 "("|"parenthèse gauche"				{ return LP; }
 ")"|"parenthèse droite"				{ return RP; }
-"["|"crochet gauche"				{ return LC; }
-"]"|"crochet droite"				{ return RC; }
-"{"|"accolade gauche"				{ return LA; }
-"}"|"accolade droite"				{ return RA; }
+"["|"crochet gauche"					{ return LC; }
+"]"|"crochet droite"					{ return RC; }
+"{"|"accolade gauche"					{ return LA; }
+"}"|"accolade droite"					{ return RA; }
 ">>"|"afficher"								{ return PRINT; }
 "="|"egal"|"égal"							{ return EQUAL; }
 "nombre décimal entre"				{ return RANDD; }
 "nombre entier entre"					{ return RANDE; }
-"concatener"|"fusionner"		  { return CONCATENATION; }
+"concatener"|"fusionner"		  { return CONCAT; }
 "en randian"		  						{ return RAD; }
-"en degré"|"°"		  					{ return DG; }
+"en degré"|"°"		  					{ return DEG; }
+"e"|"entier"									{ return ENT; }
+"d"|"decimal"									{ return DEC; }
+"~"														{ return BETWEEN; }
 [a-zA-Z][a-zA-Z0-9]* 					{ strcpy(yylval.aString, yytext); return VARIABLE; }
 [0-9]+(\.[0-9]+)? 						{ yylval.aNumber = atof(yytext); return NUMBER; }
 . 														{ }
