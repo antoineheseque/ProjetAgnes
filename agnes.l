@@ -28,6 +28,8 @@ pi|PI|π												{ return PI; }
 ")"|"parenthèse droite"				{ return RIGHT; }
 ">>"|"afficher"								{ return PRINT; }
 "="|"egal"|"égal"							{ return EQUAL; }
+"nombre décimal entre"				{ return RANDD; }
+"nombre entier entre"					{ return RANDE; }
 [a-zA-Z][a-zA-Z0-9]* 					{ strcpy(yylval.aString, yytext); return VARIABLE; }
 [0-9]+(\.[0-9]+)? 						{ yylval.aNumber = atof(yytext); return NUMBER; }
 . 														{ }
