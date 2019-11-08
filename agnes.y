@@ -44,6 +44,7 @@ void UnknownVarError(string s);
 /* Gestion de l'associativité */
 %left PLUS MINUS
 %left MULTIPLY DIVIDE
+%left BETWEEN
 
 /* Gestion des types */
 %type<aNumber> number
@@ -68,7 +69,7 @@ number:
 	NUMBER 														{ $$ = $1; }
 	| PI 															{ $$ = M_PI; }
   | LP number RP 										{ $$ = $2; }
-	| RANDE number BETWEEN number				{ int m = $4-$2; $$ = rand() % m + $2; }
+	| RANDE number BETWEEN number			{ int m = $4-$2; $$ = rand() % m + $2; }
 	| ENT LC number BETWEEN number RC { int m = $5-$3; $$ = rand() % m + $3; }
 	| instructions										{ $$ = $1; }
 	| functions												{ $$ = $1; }
