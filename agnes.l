@@ -4,7 +4,7 @@
 	#include <stdio.h>
 	#include <time.h>
 	#include <string>
-	#include "agnes.tab.h"
+	#include "agnes.y.hpp"
 
 	using namespace std;
 	int yyerror(char *);
