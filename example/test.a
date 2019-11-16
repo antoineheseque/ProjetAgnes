@@ -9,21 +9,9 @@
 >>10*10/5.18;
 
 /* Affichage d'un calcul plus complexe avec parenthèses */
->>10*23.49054/(5+242450.20392);
+>>10*23.4/(5+2.2*7);
 
 /* Création d'une variable */
 aA=13+25;
 
-/* Affichage d'une variable multiplié par PI (3 fois) */
->>aA*π*pi*PI;
-
-/* Calcul d'un cosinus d'un cosinus */
-afficher sin(5)+cos(10*pi/180);
-
-/* Nombre entier entre 5 et 15 */
->>nombre entier entre 5 et 15;
->>e[5~15];
-
-/* Nombre décimal entre 5 et 15 */
->>nombre décimal entre 5 et 15;
->>d[5~10];
+afficher aA;
