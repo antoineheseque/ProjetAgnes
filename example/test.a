@@ -1,17 +1,10 @@
-/*
-  +--------------------------------+
-  |                                |
-  |        PROGRAMME AGNES         |
-  |                                |
-  +--------------------------------+
-*/
-/* Affichage d'un calcul simple avec '>>' ou 'afficher' */
->>10*10/5.18;
-
-/* Affichage d'un calcul plus complexe avec parenthèses */
->>10*23.4/(5+2.2*7);
-
-/* Création d'une variable */
-aA=13+25;
-
-afficher aA;
+>>10*10;
+>>5*2.5;
+a=5;
+>>a;
+si(a-6){
+  >>1;
+}
+sinon{
+  >>10;
+}

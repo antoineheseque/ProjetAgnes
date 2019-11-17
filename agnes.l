@@ -1,6 +1,11 @@
 /*** Definition SECTION ***/
 %{
 	#include <string>
+	// structure pour stocker les adresses pour les sauts condistionnels et autres...
+	typedef struct addr {
+	  int ic_goto;
+	  int ic_false;
+	} t_address;
 	#include "agnes.y.hpp"
 
 	using namespace std;

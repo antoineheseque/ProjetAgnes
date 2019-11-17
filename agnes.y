@@ -4,19 +4,20 @@
 #include <map>
 #include <math.h>
 #include <vector>
-using namespace std;
 
-// Stockage des variables
-map<string,double> variable;
-vector<pair<int,double>> instruction;
-int ic = 0;   // compteur instruction
-inline ins(int c, double d) { instruction.push_back(make_pair(c, d)); ic++;};
+using namespace std;
 
 // structure pour stocker les adresses pour les sauts condistionnels et autres...
 typedef struct addr {
   int ic_goto;
   int ic_false;
 } t_address;
+
+// Stockage des variables
+map<string,double> variable;
+vector<pair<int,double>> instruction;
+int ic = 0;   // compteur instruction
+inline void ins(int c, double d) { instruction.push_back(make_pair(c, d)); ic++;};
 
 extern FILE *yyin;
 extern int yyerror(char *);
@@ -37,7 +38,7 @@ void UnknownVarError(string s);
 
 /* CONDITIONS */
 %token<address> IF
-%token ELSE REPEAT JMP JNZ OUT
+%token ELSE REPEAT JMP COND PRINT
 
 /* Math */
 %token PLUS MINUS MULTIPLY DIVIDE
@@ -48,7 +49,7 @@ void UnknownVarError(string s);
 %token LA RA /* { } */
 
 /* Autre ... */
-%token SEPARATOR PRINT
+%token SEPARATOR
 
 /* Gestion de l'associativité */
 %left PLUS MINUS
@@ -68,8 +69,8 @@ bloc:
 ;
 
 line:
-	PRINT number SEPARATOR 						{ ins (OUT,0);   /* imprimer le résultat de l'expression */ }
-  | IF instruction                  { $1.ic_goto = ic; ins (JNZ,0); }
+PRINT number SEPARATOR 	  					{ ins (PRINT,0);   /* imprimer le résultat de l'expression */ }
+  | IF LP instruction RP            { $1.ic_goto = ic; ins (COND,0); }
     LA bloc RA                      { $1.ic_false = ic; ins (JMP,0); instruction[$1.ic_goto].second = ic; }
     ELSE  LA bloc RA                { instruction[$1.ic_false].second = ic; }
   | VARIABLE EQUAL number SEPARATOR { variable[$1] = $3; }
@@ -79,7 +80,7 @@ number:
 	NUMBER 														{ ins(NUMBER, $1); }
   | LP number RP 										{ }
 	| instruction	   									{ }
-	| VARIABLE												{ ins(VARIABLE, variable[$1]); } /*if(!variable.count($1)) UnknownVarError($1); else $$ = variable[$1];*/
+	| VARIABLE												{ ins(NUMBER, variable[$1]); } /*if(!variable.count($1)) UnknownVarError($1); else $$ = variable[$1];*/
 ;
 
 instruction:
@@ -110,8 +111,11 @@ void start(){
   vector<double> stack;
   double x,y;
 
+  cout << "Chargement de la pile ..." << endl;
+
   ic = 0;
   while ( ic < instruction.size() ){
+    //cout << "Nbr instructions: " << instruction.size() << endl;
     auto ins = instruction[ic];
 
     switch(ins.first){
@@ -120,52 +124,64 @@ void start(){
         y = unstack(stack);
         stack.push_back(y+x);
         ic++;
-      break;
-
+        break;
+      case '-':
+        x = unstack(stack);
+        y = unstack(stack);
+        stack.push_back(y-x);
+        ic++;
+        break;
       case '*':
         x = unstack(stack);
         y = unstack(stack);
         stack.push_back(y*x);
         ic++;
-      break;
-
+        break;
+        case '/':
+          x = unstack(stack);
+          y = unstack(stack);
+          stack.push_back(x/y);
+          ic++;
+          break;
       case NUMBER :
         stack.push_back(ins.second);
         ic++;
-      break;
-
+        break;
       case JMP :
         ic = ins.second;
-      break;
-
-      case JNZ :
+        break;
+      case COND :
         x = unstack(stack);
         ic = ( x ? ic + 1 : ins.second);
-      break;
-
+        break;
       case PRINT :
         cout << unstack(stack) << endl;
         ic++;
-      break;
+        break;
     }
   }
 }
 
 int main(int argc, char **argv) {
+  cout << "Démarrage du programme ..." << endl;
 	srand (time(NULL));
 	if(argc  != 2) {
-		printf("[Erreur] Entrez la commande suivante: ./agnes.Ag nomFichier.a\n");
-		exit (0);
+    cout << "[Erreur] Entrez la commande suivante: ./agnes.Ag nomFichier.a" << endl;
+    cout << "[Erreur] Passage en mode console." << endl;
+		yyin = stdin;
 	}
 	FILE* file = fopen(argv[1],"r");
 	if(file == NULL) {
-		printf("[Erreur] Aucun fichier %s trouvé, passage en mode console", argv[1]);
+    cout << "[Erreur] Aucun fichier " << argv[1] << " trouvé, passage en mode console." << endl;
 		yyin = stdin;
 	}
 	else{
 		yyin = file;   // now  flex  reads  from  file
 	}
   yyparse();
+
+  cout << "Fichier ouvert." << endl;
+
   start();
 	fclose(file);
 }
