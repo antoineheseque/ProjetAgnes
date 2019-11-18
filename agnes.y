@@ -1,6 +1,7 @@
 %{
 #include <iostream>
 #include <string>
+#include <cstring>
 #include <map>
 #include <math.h>
 #include <vector>
@@ -15,6 +16,8 @@ typedef struct addr {
 
 // Stockage des variables
 map<string,double> variable;
+int ict = 1;   // compteur texte
+map<int,char[256]> text;
 vector<pair<int,double>> instruction;
 int ic = 0;   // compteur instruction
 inline void ins(int c, double d) { instruction.push_back(make_pair(c, d)); ic++;};
@@ -35,10 +38,12 @@ void UnknownVarError(string s);
 /* Variable et adresses */
 %token<aNumber> NUMBER
 %token<aString> VARIABLE
+%token<aString> TEXT
 
 /* CONDITIONS */
 %token<address> IF
 %token ELSE REPEAT JMP COND PRINT
+%token INF SUP INFOREQUAL SUPOREQUAL IFEQUAL IFDIFFERENT
 
 /* Math */
 %token PLUS MINUS MULTIPLY DIVIDE
@@ -69,8 +74,9 @@ bloc:
 ;
 
 line:
-PRINT number SEPARATOR 	  					{ ins (PRINT,0);   /* imprimer le résultat de l'expression */ }
-  | IF LP instruction RP            { $1.ic_goto = ic; ins (COND,0); }
+  PRINT number SEPARATOR 	  				{ ins (PRINT,0); }
+  | PRINT TEXT SEPARATOR 	  			  { ins (TEXT,ict); strcpy(text[ict],$2); cout << "Aa:" << text[ict] << ict << endl; ict++; } /*strcpy(text[ict], */
+  | IF LP condition RP              { $1.ic_goto = ic; ins (COND,0); }
     LA bloc RA                      { $1.ic_false = ic; ins (JMP,0); instruction[$1.ic_goto].second = ic; }
     ELSE  LA bloc RA                { instruction[$1.ic_false].second = ic; }
   | VARIABLE EQUAL number SEPARATOR { variable[$1] = $3; }
@@ -81,6 +87,15 @@ number:
   | LP number RP 										{ }
 	| instruction	   									{ }
 	| VARIABLE												{ ins(NUMBER, variable[$1]); } /*if(!variable.count($1)) UnknownVarError($1); else $$ = variable[$1];*/
+;
+
+condition:
+  number INF number 						  	{ ins('<', 0); }
+  | number SUP number						   	{ ins('>', 0); }
+  | number INFOREQUAL number 				{ ins('<=', 0); }
+  | number SUPOREQUAL number				{ ins('>=', 0); }
+  | number IFEQUAL number				    { ins('==', 0); }
+  | number IFDIFFERENT number				{ ins('!=', 0); }
 ;
 
 instruction:
@@ -128,7 +143,7 @@ void start(){
       case '-':
         x = unstack(stack);
         y = unstack(stack);
-        stack.push_back(y-x);
+        stack.push_back(x-y);
         ic++;
         break;
       case '*':
@@ -137,25 +152,66 @@ void start(){
         stack.push_back(y*x);
         ic++;
         break;
-        case '/':
-          x = unstack(stack);
-          y = unstack(stack);
-          stack.push_back(x/y);
-          ic++;
-          break;
-      case NUMBER :
+      case '/':
+        x = unstack(stack);
+        y = unstack(stack);
+        stack.push_back(y/x);
+        ic++;
+        break;
+      case '>':
+        x = unstack(stack);
+        y = unstack(stack);
+        stack.push_back(y > x ? true : false);
+        ic++;
+        break;
+      case '<':
+        x = unstack(stack);
+        y = unstack(stack);
+        stack.push_back(y < x ? true : false);
+        ic++;
+        break;
+      case '>=':
+        x = unstack(stack);
+        y = unstack(stack);
+        stack.push_back(y >= x ? true : false);
+        ic++;
+        break;
+      case '<=':
+        x = unstack(stack);
+        y = unstack(stack);
+        stack.push_back(y <= x ? true : false);
+        ic++;
+        break;
+      case '==':
+        x = unstack(stack);
+        y = unstack(stack);
+        stack.push_back(y == x ? true : false);
+        ic++;
+        break;
+      case '!=':
+        x = unstack(stack);
+        y = unstack(stack);
+        stack.push_back(y != x ? true : false);
+        ic++;
+        break;
+      case NUMBER:
         stack.push_back(ins.second);
         ic++;
         break;
-      case JMP :
+      case JMP:
         ic = ins.second;
         break;
-      case COND :
+      case COND:
         x = unstack(stack);
-        ic = ( x ? ic + 1 : ins.second);
+        ic = ( x==true ? ic + 1 : ins.second);
         break;
-      case PRINT :
+      case PRINT:
         cout << unstack(stack) << endl;
+        ic++;
+        break;
+      case TEXT:
+        x = ins.second;
+        cout << text[x] << endl;
         ic++;
         break;
     }

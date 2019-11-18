@@ -1,10 +1,10 @@
 >>10*10;
->>5*2.5;
-a=5;
->>a;
-si(a-6){
+a=6;
+si(a-6!=0){
+  >>"Léquation est différente de 0!";
   >>1;
 }
 sinon{
   >>10;
+  >>"L'équation est égale à 0.";
 }
