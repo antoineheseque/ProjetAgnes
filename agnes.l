@@ -44,6 +44,7 @@ pi|PI|π																						{ return PI; }
 "!="|"different de"|"différent de"								{ return IFDIFFERENT; }
 "="|"egal"|"égal"																	{ return EQUAL; }
 "répéter"|"réitérer" 															{ return REPEAT; }
+"tant que"|"Tant que" 														{ return WHILE; }
 "si"|"SI"|"Si" 																		{ return IF; }
 "Sinon"|"sinon"|"SINON"														{ return ELSE; }
 "inférieur à"|"<"|"inferieur a"										{ return INF; }

@@ -1,16 +1,7 @@
-a=-5;
-si(a+5==0){
-  a=cos(5*a*pi);
+b=0;
+>>"Boucle while";
+tant que(b<5){
+  b=b+1;
+  >>"Pénis n°";
+  >>b;
 }
->>a;
->>"Fin.";
-
->>"Choisissez un nombre: ";
-<<b;
->>"Le nombre choisi est le nombre :";
->>b;
-
->>"Choisissez un texte: ";
-<<c;
->>"Le texte choisi est le texte :";
->>c;

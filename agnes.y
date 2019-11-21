@@ -12,6 +12,7 @@ using namespace std;
 // structure pour stocker les adresses pour les sauts condistionnels et autres...
 typedef struct addr {
   int ic_goto;
+  int ic_cond;
   int ic_false;
 } t_address;
 
@@ -46,7 +47,7 @@ void UnknownVarError(string s);
 %token<aString> TEXT
 
 /* CONDITIONS */
-%token<address> IF
+%token<address> IF WHILE
 %token ELSE REPEAT JMP COND PRINT REGVAR GETVAR INPUT
 %token INF SUP INFOREQUAL SUPOREQUAL IFEQUAL IFDIFFERENT
 
@@ -86,10 +87,20 @@ line:
   PRINT number SEPARATOR 	  				{ type t; t.aDouble=0; ins(PRINT,t); }
   | PRINT TEXT SEPARATOR 	  			  { type t; strcpy(t.aString,$2); ins(TEXT,t); } /*t.aString=ict; ins(TEXT,t); strcpy(text[ict],$2); ict++;*/
   | INPUT VARIABLE SEPARATOR 	  		{ type t; strcpy(t.aString,$2); ins(INPUT,t); }
+  | VARIABLE EQUAL number SEPARATOR { type t; strcpy(t.aString,$1); ins(REGVAR,t); }
   | IF LP condition RP              { $1.ic_goto = ic; type t; t.aDouble=0; ins(COND,t); }
     LA bloc RA                      { $1.ic_false = ic; type t; t.aDouble=0; ins(JMP,t); instruction[$1.ic_goto].second.aDouble = ic; }
     elsecond                        { instruction[$1.ic_false].second.aDouble = ic; }
-  | VARIABLE EQUAL number SEPARATOR { type t; strcpy(t.aString,$1); ins(REGVAR,t); }
+
+  | WHILE { $1.ic_goto = ic; }
+    LP condition RP                 { $1.ic_cond = ic; type t; t.aDouble=0; ins(COND,t); cout << "Premier IC: " << ic << endl; }
+    LA bloc RA                      { $1.ic_false = ic;
+                                      instruction[$1.ic_cond].second.aDouble = $1.ic_false+1;
+                                      type t;
+                                      t.aDouble=$1.ic_goto;
+                                      ins(JMP,t);
+                                      cout << "IC Final: " << ic << endl;
+                                    }
 ;
 
 elsecond:
