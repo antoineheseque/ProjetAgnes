@@ -53,7 +53,7 @@ Ce langage est un langage mathématique, il vous permet de pouvoir automatiser c
   * `!` `Nombre!`
   * `factoriel` `factoriel(Nombre)`
 
-### Geometrique
+### Géometrique
 * Fonction sinus _bientot_
   * `sin` `sin(Nombre)`
   * `sinus` `sinus(Nombre)`
@@ -69,11 +69,25 @@ Ce langage est un langage mathématique, il vous permet de pouvoir automatiser c
 
 ## V - Conditions (IF)
 ### Conditions
-* a!=b
-* a=
-* a>=b
-* a<b
-...
+* Est diffèrent de
+  * `a!=b`
+  * `a different de b`
+* Est égal à
+  * `a==b`
+  * `a égal à b`
+* Est supérieur ou égal à
+  * `a>=b`
+  * `a supérieur ou égal à b`
+* Est inférieur ou égal à
+  * `a<=b`
+  * `a inférieur ou égal à b`
+* Est strictement inférieur à
+  * `a<b`
+  * `a inférieur à b`
+* Est strictement supérieur à
+  * `a>b`
+  * `a supérieur à b`
+
 ### Forme
 * si(condition){
 
