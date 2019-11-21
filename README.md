@@ -62,7 +62,10 @@ Ce langage est un langage mathématique, il vous permet de pouvoir automatiser c
   * `cosinus` `cosinus(Nombre)`
 
 ### Affichage
-* \>\> ou afficher ou ...
+
+* Pour afficher une variable, un texte ou même un nombre :
+  * `\>\>`
+  * `afficher`
 
 ## V - Conditions (IF)
 ### Conditions
