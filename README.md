@@ -3,12 +3,12 @@ Développement d'un langage de programmation
 
 ## I - Particularité du language
 
-Ce langage est une langage mathématique, il vous permet de pouvoir automatiser certaine opération facilement et dans la langue de Molière !
+Ce langage est un langage mathématique, il vous permet de pouvoir automatiser certaine opération facilement et dans la langue de Molière !
 
-Quelque petite chose à connaitre :
+### Quelque petite chose à connaitre : ###
 
-A la fin d'une instruction, veillez à mettre un `;`
-Pour ajouter un commentaire, rien de plus simple, un `*` au début de la ligne que vous souhaitez commenter et votre ligne sera commenté.
+* A la fin d'une instruction, veillez à mettre un `;`
+* Pour ajouter un commentaire, rien de plus simple, un `*` au début de la ligne que vous souhaitez commenter et votre ligne sera commenté.
 
 ## II - Arithmétique
 * Nombre
