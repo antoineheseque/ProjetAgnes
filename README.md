@@ -12,20 +12,24 @@ Ce langage est un langage mathématique, il vous permet de pouvoir automatiser c
 
 ## II - Arithmétique
 * Nombre `1 2.5 3.9 ...`
-* Nombre négatif `-1 -2.5 -3 .9...`
+* Nombre négatif `-1 -2.5 -3.9...`
 * Addition
   * `+` `Nombre + Nombre`
   * `plus` `Nombre plus Nombre`
-* Soustraction `-` `moins`
-  `Nombre - Nombre` `Nombre moins Nombre`
-* Division `/` `divise`
-  `Nombre / Nombre`
-* Multiplication `*` `fois`
-  `Nombre * Nombre` `Nombre fois Nombre`
-* Gestion de priorité `()` `parenthèse gauche parenthèse droite`
-  `Nombre * (Nombre + Nombre)` `Nombre fois parenthèse gauche Nombre + Nombre parenthèse droite`
+* Soustraction
+  * `-` `Nombre - Nombre`
+  * `moins` `Nombre moins Nombre`
+* Division
+  * `/` `Nombre / Nombre`
+  * `divise` `Nombre divise Nombre`
+* Multiplication
+  * `*` `Nombre * Nombre`
+  * `fois` `Nombre fois Nombre`
+* Gestion de priorité
+  * `()` `Nombre * (Nombre + Nombre)`
+  * `parenthèse gauche parenthèse droite` `Nombre fois parenthèse gauche Nombre + Nombre parenthèse droite`
 
-*L'opération situé dans la parenthèse sera prioritaire*
+*L'opération situé dans les parenthèses sera prioritaire*
 
 ## III - Gestion des variables
 * Déclaration de variable `a=;`
