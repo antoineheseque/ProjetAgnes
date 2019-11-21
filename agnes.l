@@ -6,6 +6,13 @@
 	  int ic_goto;
 	  int ic_false;
 	} t_address;
+
+	typedef struct type_ {
+	  double aDouble;
+	  char aString[256];
+		bool aBool;
+	} t_type;
+
 	#include "agnes.y.hpp"
 
 	using namespace std;
@@ -39,7 +46,7 @@
 "inférieur ou égal à"|"<="|"inferieur ou egal a"	{ return INFOREQUAL; }
 "supérieur ou égal à"|">="|"superieur ou egal a"	{ return SUPOREQUAL; }
 [a-zA-Z][a-zA-Z0-9]* 															{ strcpy(yylval.aString, yytext); return VARIABLE; }
-[0-9]+(\.[0-9]+)? 																{ yylval.aNumber = atof(yytext); return NUMBER; }
+[0-9]+(\.[0-9]+)? 																{ yylval.aDouble = atof(yytext); return NUMBER; }
 . 																								{ }
 %%
 

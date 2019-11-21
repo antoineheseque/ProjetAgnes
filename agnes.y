@@ -14,13 +14,17 @@ typedef struct addr {
   int ic_false;
 } t_address;
 
+typedef struct type_ {
+  double aDouble;
+  char aString[256];
+  bool aBool;
+} type;
+
 // Stockage des variables
-map<string,double> variable;
-int ict = 1;   // compteur texte
-map<int,char[256]> text;
-vector<pair<int,double>> instruction;
+map<string,type> variable;
+vector<pair<int,type>> instruction;
 int ic = 0;   // compteur instruction
-inline void ins(int c, double d) { instruction.push_back(make_pair(c, d)); ic++;};
+inline void ins(int c, type d) { instruction.push_back(make_pair(c, d)); ic++;};
 
 extern FILE *yyin;
 extern int yyerror(char *);
@@ -30,19 +34,19 @@ void UnknownVarError(string s);
 %}
 
 %union {
-	double aNumber;
+	double aDouble;
 	char aString[256];
 	t_address address;
 }
 
 /* Variable et adresses */
-%token<aNumber> NUMBER
+%token<aDouble> NUMBER
 %token<aString> VARIABLE
 %token<aString> TEXT
 
 /* CONDITIONS */
 %token<address> IF
-%token ELSE REPEAT JMP COND PRINT
+%token ELSE REPEAT JMP COND PRINT REGVAR GETVAR
 %token INF SUP INFOREQUAL SUPOREQUAL IFEQUAL IFDIFFERENT
 
 /* Math */
@@ -59,10 +63,12 @@ void UnknownVarError(string s);
 /* Gestion de l'associativité */
 %left PLUS MINUS
 %left MULTIPLY DIVIDE
+%right EXP
+%precedence NEG   /* negation--unary minus */
 
 /* Gestion des types */
-%type<aNumber> number
-%type<aNumber> instruction
+%type<aDouble> number
+%type<aDouble> instruction
 
 %start bloc
 
@@ -74,35 +80,36 @@ bloc:
 ;
 
 line:
-  PRINT number SEPARATOR 	  				{ ins (PRINT,0); }
-  | PRINT TEXT SEPARATOR 	  			  { ins (TEXT,ict); strcpy(text[ict],$2); cout << "Aa:" << text[ict] << ict << endl; ict++; } /*strcpy(text[ict], */
-  | IF LP condition RP              { $1.ic_goto = ic; ins (COND,0); }
-    LA bloc RA                      { $1.ic_false = ic; ins (JMP,0); instruction[$1.ic_goto].second = ic; }
-    ELSE  LA bloc RA                { instruction[$1.ic_false].second = ic; }
-  | VARIABLE EQUAL number SEPARATOR { variable[$1] = $3; }
+  PRINT number SEPARATOR 	  				{ type t; t.aDouble=0; ins(PRINT,t); }
+  | PRINT TEXT SEPARATOR 	  			  { type t; strcpy(t.aString,$2); ins(TEXT,t); } /*t.aString=ict; ins(TEXT,t); strcpy(text[ict],$2); ict++;*/
+  | IF LP condition RP              { $1.ic_goto = ic; type t; t.aDouble=0; ins(COND,t); }
+    LA bloc RA                      { $1.ic_false = ic; type t; t.aDouble=0; ins(JMP,t); instruction[$1.ic_goto].second.aDouble = ic; }
+    ELSE  LA bloc RA                { instruction[$1.ic_false].second.aDouble = ic; }
+  | VARIABLE EQUAL number SEPARATOR { type t; strcpy(t.aString,$1); ins(REGVAR,t); }
 ;
 
 number:
-	NUMBER 														{ ins(NUMBER, $1); }
+	NUMBER 														{ type t; t.aDouble=$1; ins(NUMBER, t); }
+  | MINUS NUMBER %prec NEG 					{ type t; t.aDouble=-$2; ins(NUMBER, t); }
   | LP number RP 										{ }
 	| instruction	   									{ }
-	| VARIABLE												{ ins(NUMBER, variable[$1]); } /*if(!variable.count($1)) UnknownVarError($1); else $$ = variable[$1];*/
+	| VARIABLE												{ type t; strcpy(t.aString,$1); ins(GETVAR, t); } /*if(!variable.count($1)) UnknownVarError($1); else $$ = variable[$1];*/
 ;
 
 condition:
-  number INF number 						  	{ ins('<', 0); }
-  | number SUP number						   	{ ins('>', 0); }
-  | number INFOREQUAL number 				{ ins('<=', 0); }
-  | number SUPOREQUAL number				{ ins('>=', 0); }
-  | number IFEQUAL number				    { ins('==', 0); }
-  | number IFDIFFERENT number				{ ins('!=', 0); }
+  number INF number 						  	{ type t; t.aDouble=0; ins('<', t); }
+  | number SUP number						   	{ type t; t.aDouble=0; ins('>', t); }
+  | number INFOREQUAL number 				{ type t; t.aDouble=0; ins('<=', t); }
+  | number SUPOREQUAL number				{ type t; t.aDouble=0; ins('>=', t); }
+  | number IFEQUAL number				    { type t; t.aDouble=0; ins('==', t); }
+  | number IFDIFFERENT number				{ type t; t.aDouble=0; ins('!=', t); }
 ;
 
 instruction:
-	number PLUS number 						  	{ ins('+', 0); }
-	| number MINUS number							{ ins('-', 0); }
-	| number MULTIPLY number 					{ ins('*', 0); }
-	| number DIVIDE number						{ ins('/', 0); }
+	number PLUS number 						  	{ type t; t.aDouble=0; ins('+', t); }
+	| number MINUS number							{ type t; t.aDouble=0; ins('-', t); }
+	| number MULTIPLY number 					{ type t; t.aDouble=0; ins('*', t); }
+	| number DIVIDE number						{ type t; t.aDouble=0; ins('/', t); }
 ;
 
 %%
@@ -116,15 +123,15 @@ void  UnknownVarError(string s) {
 	exit (0);
 }
 
-double unstack(vector<double> &stack) {
-  double t = stack[stack.size()-1];
+type unstack(vector<type> &stack) {
+  type t = stack[stack.size()-1];
   stack.pop_back();
   return t;
 }
 
 void start(){
-  vector<double> stack;
-  double x,y;
+  vector<type> stack;
+  type x,y;
 
   cout << "Chargement de la pile ..." << endl;
 
@@ -133,85 +140,106 @@ void start(){
     //cout << "Nbr instructions: " << instruction.size() << endl;
     auto ins = instruction[ic];
 
+    type z; // Initialiser un nouveau type a chaque fois pour le résultat z;
     switch(ins.first){
       case '+':
         x = unstack(stack);
         y = unstack(stack);
-        stack.push_back(y+x);
+        z.aDouble = y.aDouble + x.aDouble;
+        stack.push_back(z);
         ic++;
         break;
       case '-':
         x = unstack(stack);
         y = unstack(stack);
-        stack.push_back(x-y);
+        z.aDouble = y.aDouble - x.aDouble;
+        stack.push_back(z);
         ic++;
         break;
       case '*':
         x = unstack(stack);
         y = unstack(stack);
-        stack.push_back(y*x);
+        z.aDouble = x.aDouble*y.aDouble;
+        stack.push_back(z);
         ic++;
         break;
       case '/':
         x = unstack(stack);
         y = unstack(stack);
-        stack.push_back(y/x);
+        z.aDouble = y.aDouble/x.aDouble;
+        stack.push_back(z);
         ic++;
         break;
       case '>':
         x = unstack(stack);
         y = unstack(stack);
-        stack.push_back(y > x ? true : false);
+        z.aBool = y.aDouble > x.aDouble ? true : false;
+        stack.push_back(z);
         ic++;
         break;
       case '<':
         x = unstack(stack);
         y = unstack(stack);
-        stack.push_back(y < x ? true : false);
+        z.aBool = y.aDouble < x.aDouble ? true : false;
+        stack.push_back(z);
         ic++;
         break;
       case '>=':
         x = unstack(stack);
         y = unstack(stack);
-        stack.push_back(y >= x ? true : false);
+        z.aBool = y.aDouble >= x.aDouble ? true : false;
+        stack.push_back(z);
         ic++;
         break;
       case '<=':
         x = unstack(stack);
         y = unstack(stack);
-        stack.push_back(y <= x ? true : false);
+        z.aBool = y.aDouble <= x.aDouble ? true : false;
+        stack.push_back(z);
         ic++;
         break;
       case '==':
         x = unstack(stack);
         y = unstack(stack);
-        stack.push_back(y == x ? true : false);
+        z.aBool = y.aDouble == x.aDouble ? true : false;
+        stack.push_back(z);
         ic++;
         break;
       case '!=':
         x = unstack(stack);
         y = unstack(stack);
-        stack.push_back(y != x ? true : false);
+        z.aBool = y.aDouble != x.aDouble ? true : false;
+        stack.push_back(z);
         ic++;
         break;
       case NUMBER:
         stack.push_back(ins.second);
         ic++;
         break;
+      case GETVAR: // Récupérer la valeur de la VARIABLE
+        z.aDouble=variable[ins.second.aString].aDouble;
+        stack.push_back(z);
+        ic++;
+        break;
+      case REGVAR: // Enregistrer la VARIABLE
+        x = unstack(stack);
+        variable[ins.second.aString]=x;
+        ic++;
+        break;
       case JMP:
-        ic = ins.second;
+        ic = ins.second.aDouble;
         break;
       case COND:
         x = unstack(stack);
-        ic = ( x==true ? ic + 1 : ins.second);
+        ic = ( x.aBool==true ? ic + 1 : ins.second.aDouble);
         break;
       case PRINT:
-        cout << unstack(stack) << endl;
+        x = unstack(stack);
+        cout << x.aDouble << endl;
         ic++;
         break;
       case TEXT:
-        x = ins.second;
-        cout << text[x] << endl;
+        cout << ins.second.aString << endl;
         ic++;
         break;
     }
