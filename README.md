@@ -11,12 +11,11 @@ Ce langage est un langage mathématique, il vous permet de pouvoir automatiser c
 * Pour ajouter un commentaire, rien de plus simple, `/* commentaire */`.
 
 ## II - Arithmétique
-* Nombre
-  * `1 2.5 3.9 ...`
-* Nombre négatif
-`-1 -2.5 -3 .9...`
-* Addition `+` `plus`
-  `Nombre + Nombre` `Nombre plus Nombre`
+* Nombre `1 2.5 3.9 ...`
+* Nombre négatif `-1 -2.5 -3 .9...`
+* Addition
+  * `+` `Nombre + Nombre`
+  * `plus` `Nombre plus Nombre`
 * Soustraction `-` `moins`
   `Nombre - Nombre` `Nombre moins Nombre`
 * Division `/` `divise`
