@@ -1,52 +1,55 @@
 # ProjetAgnes
 Développement d'un langage de programmation
 
-## I - Arithmétique
-nombre
-nombre neg
-+
--
-/
-*
-()
+## I - Particularité du language
 
-## II - Gestion des variables
-a=;
-a=a+b;
+## II - Arithmétique
+* nombre
+* nombre neg
+* +
+* -
+* /
+* *
+* ()
 
-## III - Fonctions de base
+## III - Gestion des variables
+* a=;
+* a=a+b;
+
+## IV - Fonctions de base
 ### Arithmétique
-exponentielle (bientot)
-pi (bientot)
-nbr random (bientot)
-factoriel (bientot)
+
+* exponentielle (bientot)
+* pi (bientot)
+* nbr random (bientot)
+* factoriel (bientot)
 
 ### Geometrique
-sin (bientot)
-cos (bientot)
+* sin (bientot)
+* cos (bientot)
 
 ### Affichage
->> ou afficher ou ...
+* >> ou afficher ou ...
 
-## IV - Conditions (IF)
+## V - Conditions (IF)
 ### Conditions
-a!=b
-a=
-a>=b
-a<b
+* a!=b
+* a=
+* a>=b
+* a<b
 ...
 ### Forme
-si(condition){
+* si(condition){
 
 }
-sinon{
+* sinon{
 
 }
  ...
 
-ou si tout seul; (bientot)
+* ou si tout seul; (bientot)
 
-## IV - Boucles
+## VI - Boucles
 ### Boucle POUR (FOR)
 Bientot...
 
