@@ -5,16 +5,16 @@ Développement d'un langage de programmation
 
 Ce langage est un langage mathématique, il vous permet de pouvoir automatiser certaine opération facilement et dans la langue de Molière !
 
-### Quelque petite chose à connaitre : ###
+### Quelques petites choses à connaitre : ###
 
 * A la fin d'une instruction, veillez à mettre un `;`
-* Pour ajouter un commentaire, rien de plus simple, un `*` au début de la ligne que vous souhaitez commenter et votre ligne sera commenté.
+* Pour ajouter un commentaire, rien de plus simple, `/* commentaire */`.
 
 ## II - Arithmétique
 * Nombre
-  `1 2 3 ...`
+  `1 2.5 3.9 ...`
 * Nombre negatif
-`-1 -2 -3 ...`
+`-1 -2.5 -3 .9...`
 * Addition `+`
   `Nombre + Nombre`
 * Soustraction `-`
@@ -35,11 +35,10 @@ Ce langage est un langage mathématique, il vous permet de pouvoir automatiser c
 ## IV - Fonctions de base
 ### Arithmétique
 
-* exponentielle (bientot)
-* pi (bientot)
-* nbr random (bientot)
-* factoriel (bientot)
-
+* Exponentielle `exp()``exp(Nombre)` _bientot_
+* Pi `pi` _bientot_
+* Nombre aléatoire `rand``rand(Nombre)` _bientot_
+* Factoriel `!``Nombre!`
 ### Geometrique
 * sin (bientot)
 * cos (bientot)
