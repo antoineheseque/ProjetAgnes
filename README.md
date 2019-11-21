@@ -42,17 +42,27 @@ Ce langage est un langage mathématique, il vous permet de pouvoir automatiser c
 ## IV - Fonctions de base
 ### Arithmétique
 
-* Fonction exponentielle `exp()` `exp(Nombre)` _bientot_
+* Fonction exponentielle _bientot_
+  * `exp()` `exp(Nombre)`
+  * `exponentielle()` `exponentielle(Nombre)`
 * Nombre pi `pi` _bientot_
-* Nombre aléatoire `rand` `rand(Nombre)` _bientot_
-* Fonction factoriel `!` `Nombre!` _bientot_
+* Nombre aléatoire _bientot_
+  * `rand` `rand(Nombre)`
+  * `aleatoire` `aleatoire(Nombre)`
+* Fonction factoriel _bientot_
+  * `!` `Nombre!`
+  * `factoriel` `factoriel(Nombre)`
 
 ### Geometrique
-* Fonction sinus `sin` `sin(Nombre)` _bientot_
-* Fonction cosinus `cos` `cos(Nombre)` _bientot_
+* Fonction sinus _bientot_
+  * `sin` `sin(Nombre)`
+  * `sinus` `sinus(Nombre)`
+* Fonction cosinus _bientot_
+  * `cos` `cos(Nombre)`
+  * `cosinus` `cosinus(Nombre)`
 
 ### Affichage
-* >> ou afficher ou ...
+* \>\> ou afficher ou ...
 
 ## V - Conditions (IF)
 ### Conditions
