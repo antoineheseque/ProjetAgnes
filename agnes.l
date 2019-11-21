@@ -26,8 +26,11 @@
 \/[*]([^*]|([*][^/]))*[*]+\/ 											{ } // printf("%s\n", yytext); A rajouter si on veux afficher les commentaires
 \"(.*?)\"																					{ strcpy(yylval.aString, yytext); return TEXT; }
 pi|PI|π																						{ return PI; }
+"cos"|"cosinus"																		{ return COS; }
+"sin"|"sinus"																			{ return SIN; }
+"tan"|"tangente"																	{ return TAN; }
 ";"|"point virgule" 															{ return SEPARATOR; }
-	"+"|"plus"			 																{ return PLUS; }
+"+"|"plus"			 																	{ return PLUS; }
 "-"|"moins"								   											{ return MINUS; }
 "*"|"fois"|"multiplié par"												{ return MULTIPLY; }
 "/"|"divisé par"																	{ return DIVIDE; }
@@ -36,8 +39,8 @@ pi|PI|π																						{ return PI; }
 "{"|"accolade gauche"															{ return LA; }
 "}"|"accolade droite"															{ return RA; }
 ">>"|"afficher"																		{ return PRINT; }
-"=="|"est egal a"|"est égal à"										{ return IFEQUAL; }
-"!="|"est different de"|"est différent de"				{ return IFDIFFERENT; }
+"=="|"egal a"|"égal à"														{ return IFEQUAL; }
+"!="|"different de"|"différent de"								{ return IFDIFFERENT; }
 "="|"egal"|"égal"																	{ return EQUAL; }
 "répéter"|"réitérer" 															{ return REPEAT; }
 "si"|"SI"|"Si" 																		{ return IF; }

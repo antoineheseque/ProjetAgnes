@@ -52,6 +52,7 @@ void UnknownVarError(string s);
 /* Math */
 %token PLUS MINUS MULTIPLY DIVIDE
 %token EQUAL PI
+%token COS SIN TAN
 
 /* Parentheses */
 %token LP RP /* ( ) */
@@ -69,6 +70,7 @@ void UnknownVarError(string s);
 /* Gestion des types */
 %type<aDouble> number
 %type<aDouble> instruction
+%type<aDouble> functions
 
 %start bloc
 
@@ -98,6 +100,7 @@ number:
   | MINUS NUMBER %prec NEG 					{ type t; t.aDouble=-$2; ins(NUMBER, t); }
   | LP number RP 										{ }
 	| instruction	   									{ }
+  | functions                       { type t; t.aDouble=$1; ins(NUMBER, t); }
 	| VARIABLE												{ type t; strcpy(t.aString,$1); ins(GETVAR, t); } /*if(!variable.count($1)) UnknownVarError($1); else $$ = variable[$1];*/
 ;
 
@@ -115,6 +118,12 @@ instruction:
 	| number MINUS number							{ type t; t.aDouble=0; ins('-', t); }
 	| number MULTIPLY number 					{ type t; t.aDouble=0; ins('*', t); }
 	| number DIVIDE number						{ type t; t.aDouble=0; ins('/', t); }
+;
+
+functions:
+	COS LP number RP 			  					{ $$ = cos($3); }
+	| SIN LP number RP 								{ $$ = sin($3); }
+	| TAN LP number RP 								{ $$ = tan($3); }
 ;
 
 %%
