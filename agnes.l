@@ -1,69 +1,55 @@
 /*** Definition SECTION ***/
 %{
-	#include <stdlib.h>
-	#include <stdio.h>
-	#include <time.h>
 	#include <string>
-	#include "agnes.tab.h"
+	// structure pour stocker les adresses pour les sauts condistionnels et autres...
+	typedef struct addr {
+	  int ic_goto;
+	  int ic_false;
+	} t_address;
+
+	typedef struct type_ {
+	  double aDouble;
+	  char aString[256];
+		bool aBool;
+	} t_type;
+
+	#include "agnes.y.hpp"
 
 	using namespace std;
-	int yyerror(char *);
-	int yylex(void);
 %}
+%option noyywrap
 %option yylineno
 
 /*** Rules SECTION ***/
 %%
-[ \t\n]+											; // ignore all whitespace
-\/[*]([^*]|([*][^/]))*[*]+\/ 	{ } // printf("%s\n", yytext); A rajouter si on veux afficher les commentaires
-pi|PI|π												{ return PI; }
-"cos"|"cosinus"								{ return COS; }
-"sin"|"sinus"									{ return SIN; }
-"tan"|"tangente"							{ return TAN; }
-";"|"point virgule" 					{ return SEPARATOR; }
-"+"|"plus"			 							{ return PLUS; }
-"-"|"moins"								   	{ return MINUS; }
-"*"|"fois"|"multiplié par"		{ return MULTIPLY; }
-"/"|"divisé par"							{ return DIVIDE; }
-"("|"parenthèse gauche"				{ return LP; }
-")"|"parenthèse droite"				{ return RP; }
-"["|"crochet gauche"					{ return LC; }
-"]"|"crochet droite"					{ return RC; }
-"{"|"accolade gauche"					{ return LA; }
-"}"|"accolade droite"					{ return RA; }
-">>"|"afficher"								{ return PRINT; }
-"="|"egal"|"égal"							{ return EQUAL; }
-"nombre décimal entre"				{ return RANDD; }
-"nombre entier entre"					{ return RANDE; }
-"concatener"|"fusionner"		  { return CONCAT; }
-"en randian"		  						{ return RAD; }
-"en degré"|"°"		  					{ return DEG; }
-"e"|"entier"									{ return ENT; }
-"d"|"decimal"									{ return DEC; }
-"~"|"et"											{ return BETWEEN; }
-[a-zA-Z][a-zA-Z0-9]* 					{ strcpy(yylval.aString, yytext); return VARIABLE; }
-[0-9]+(\.[0-9]+)? 						{ yylval.aNumber = atof(yytext); return NUMBER; }
-. 														{ }
+[ \t\n]+																					; // ignore all whitespace
+\/[*]([^*]|([*][^/]))*[*]+\/ 											{ } // printf("%s\n", yytext); A rajouter si on veux afficher les commentaires
+\"(.*?)\"																					{ strcpy(yylval.aString, yytext); return TEXT; }
+";"|"point virgule" 															{ return SEPARATOR; }
+	"+"|"plus"			 																{ return PLUS; }
+"-"|"moins"								   											{ return MINUS; }
+"*"|"fois"|"multiplié par"												{ return MULTIPLY; }
+"/"|"divisé par"																	{ return DIVIDE; }
+"("|"parenthèse gauche"														{ return LP; }
+")"|"parenthèse droite"														{ return RP; }
+"{"|"accolade gauche"															{ return LA; }
+"}"|"accolade droite"															{ return RA; }
+">>"|"afficher"																		{ return PRINT; }
+"=="|"est egal a"|"est égal à"										{ return IFEQUAL; }
+"!="|"est different de"|"est différent de"				{ return IFDIFFERENT; }
+"="|"egal"|"égal"																	{ return EQUAL; }
+"répéter"|"réitérer" 															{ return REPEAT; }
+"si"|"SI"|"Si" 																		{ return IF; }
+"Sinon"|"sinon"|"SINON"														{ return ELSE; }
+"inférieur à"|"<"|"inferieur a"										{ return INF; }
+"supérieur à"|">"|"superieur a"										{ return SUP; }
+"inférieur ou égal à"|"<="|"inferieur ou egal a"	{ return INFOREQUAL; }
+"supérieur ou égal à"|">="|"superieur ou egal a"	{ return SUPOREQUAL; }
+[a-zA-Z][a-zA-Z0-9]* 															{ strcpy(yylval.aString, yytext); return VARIABLE; }
+[0-9]+(\.[0-9]+)? 																{ yylval.aDouble = atof(yytext); return NUMBER; }
+. 																								{ }
 %%
 
 int yyerror(char* str) {
 	fprintf(stderr,"[Erreur][Ligne %d] %s\n",yylineno-1,str);
-}
-
-int yywrap(){}
-
-int main(int num_args, char** args) {
-	srand (time(NULL));
-	if(num_args  != 2) {
-		printf("[Erreur] Entrez la commande suivante: ./agnes.Ag nomFichier.a\n");
-		exit (0);
-	}
-	FILE* file = fopen(args[1],"r");
-	if(file == NULL) {
-		printf("[Erreur] Impossible d'ouvrir le fichier %s\n", args [1]);
-		exit (0);
-	}
-	yyin = file;   // now  flex  reads  from  file
-	yyparse();
-	fclose(file);
 }
