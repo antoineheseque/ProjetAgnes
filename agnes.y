@@ -51,7 +51,7 @@ void UnknownVarError(string s);
 
 /* Math */
 %token PLUS MINUS MULTIPLY DIVIDE
-%token EQUAL
+%token EQUAL PI
 
 /* Parentheses */
 %token LP RP /* ( ) */
@@ -84,12 +84,17 @@ line:
   | PRINT TEXT SEPARATOR 	  			  { type t; strcpy(t.aString,$2); ins(TEXT,t); } /*t.aString=ict; ins(TEXT,t); strcpy(text[ict],$2); ict++;*/
   | IF LP condition RP              { $1.ic_goto = ic; type t; t.aDouble=0; ins(COND,t); }
     LA bloc RA                      { $1.ic_false = ic; type t; t.aDouble=0; ins(JMP,t); instruction[$1.ic_goto].second.aDouble = ic; }
-    ELSE  LA bloc RA                { instruction[$1.ic_false].second.aDouble = ic; }
+    elsecond                        { instruction[$1.ic_false].second.aDouble = ic; }
   | VARIABLE EQUAL number SEPARATOR { type t; strcpy(t.aString,$1); ins(REGVAR,t); }
+;
+
+elsecond:
+  | ELSE LA bloc RA                 { }
 ;
 
 number:
 	NUMBER 														{ type t; t.aDouble=$1; ins(NUMBER, t); }
+  | PI                              { type t; t.aDouble=M_PI; ins(NUMBER, t); }
   | MINUS NUMBER %prec NEG 					{ type t; t.aDouble=-$2; ins(NUMBER, t); }
   | LP number RP 										{ }
 	| instruction	   									{ }

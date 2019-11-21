@@ -25,6 +25,7 @@
 [ \t\n]+																					; // ignore all whitespace
 \/[*]([^*]|([*][^/]))*[*]+\/ 											{ } // printf("%s\n", yytext); A rajouter si on veux afficher les commentaires
 \"(.*?)\"																					{ strcpy(yylval.aString, yytext); return TEXT; }
+pi|PI|π																						{ return PI; }
 ";"|"point virgule" 															{ return SEPARATOR; }
 	"+"|"plus"			 																{ return PLUS; }
 "-"|"moins"								   											{ return MINUS; }
