@@ -91,12 +91,12 @@ Ce langage est un langage mathématique, il vous permet de pouvoir automatiser c
 ### Forme
 * Si, sinon
 
-`si(condition){
+  si(condition){
+    
+  }
+  sinon{
 
-}
-sinon{
-
-}
+  }
 `
 
 * ou si tout seul; (bientot)
