@@ -5,9 +5,11 @@ Développement d'un langage de programmation
 
 ## II - Arithmétique
 * Nombre
-  `1 2 3`
+  `1 2 3 ...`
 * Nombre negatif
-* Addition (+)
+`-1 -2 -3 ...`
+* Addition `+`
+  `Nombre + Nombre`
 * Soustraction (-)
 * Division (/)
 * Multiplication (\*)
