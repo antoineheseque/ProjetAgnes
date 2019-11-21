@@ -4,6 +4,7 @@
 #include <cstring>
 #include <map>
 #include <math.h>
+#include <regex>
 #include <vector>
 
 using namespace std;
@@ -46,7 +47,7 @@ void UnknownVarError(string s);
 
 /* CONDITIONS */
 %token<address> IF
-%token ELSE REPEAT JMP COND PRINT REGVAR GETVAR
+%token ELSE REPEAT JMP COND PRINT REGVAR GETVAR INPUT
 %token INF SUP INFOREQUAL SUPOREQUAL IFEQUAL IFDIFFERENT
 
 /* Math */
@@ -84,6 +85,7 @@ bloc:
 line:
   PRINT number SEPARATOR 	  				{ type t; t.aDouble=0; ins(PRINT,t); }
   | PRINT TEXT SEPARATOR 	  			  { type t; strcpy(t.aString,$2); ins(TEXT,t); } /*t.aString=ict; ins(TEXT,t); strcpy(text[ict],$2); ict++;*/
+  | INPUT VARIABLE SEPARATOR 	  		{ type t; strcpy(t.aString,$2); ins(INPUT,t); }
   | IF LP condition RP              { $1.ic_goto = ic; type t; t.aDouble=0; ins(COND,t); }
     LA bloc RA                      { $1.ic_false = ic; type t; t.aDouble=0; ins(JMP,t); instruction[$1.ic_goto].second.aDouble = ic; }
     elsecond                        { instruction[$1.ic_false].second.aDouble = ic; }
@@ -256,6 +258,20 @@ void start(){
         cout << ins.second.aString << endl;
         ic++;
         break;
+      case INPUT:
+        string str = "";
+        getline(cin, str);
+        const char *str2 = str.c_str();
+        regex number("[0-9]+(.[0-9]+)?");
+        if(regex_match(str, number)){
+          z.aDouble = stod(str);
+        }
+        else{
+          cout << "Le texte entré n'est pas un nombre." << endl;
+        }
+        variable[ins.second.aString]=z;
+        ic++;
+        break;
     }
   }
 }
@@ -270,15 +286,14 @@ int main(int argc, char **argv) {
 	}
 	FILE* file = fopen(argv[1],"r");
 	if(file == NULL) {
-    cout << "[Erreur] Aucun fichier " << argv[1] << " trouvé, passage en mode console." << endl;
+    cout << "[Erreur] Aucun fichier " << argv[1] << " trouvé, passage en mode console." << endl << endl;
+
 		yyin = stdin;
 	}
 	else{
 		yyin = file;   // now  flex  reads  from  file
 	}
   yyparse();
-
-  cout << "Fichier ouvert." << endl;
 
   start();
 	fclose(file);

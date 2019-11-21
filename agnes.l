@@ -39,6 +39,7 @@ pi|PI|π																						{ return PI; }
 "{"|"accolade gauche"															{ return LA; }
 "}"|"accolade droite"															{ return RA; }
 ">>"|"afficher"																		{ return PRINT; }
+"<<"|"entrer"																			{ return INPUT; }
 "=="|"egal a"|"égal à"														{ return IFEQUAL; }
 "!="|"different de"|"différent de"								{ return IFDIFFERENT; }
 "="|"egal"|"égal"																	{ return EQUAL; }
