@@ -91,17 +91,17 @@ Ce langage est un langage mathématique, il vous permet de pouvoir automatiser c
 ### Forme
 * Si, sinon
 ```
-  si(condition){
-
+  Si(condition){
+    /* Instruction */
   }
-  sinon{
-
+  Sinon{
+    /* Instruction (facultatif)*/
   }
 ```
-* ou si tout seul; (bientot)
 
 ## VI - Boucles
 ### Boucle POUR (FOR)
-Bientot...
+
+_bientot_
 
 ### Boucle TANT QUE (WHILE)
