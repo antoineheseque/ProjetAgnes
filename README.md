@@ -12,7 +12,7 @@ Ce langage est un langage mathématique, il vous permet de pouvoir automatiser c
 
 ## II - Arithmétique
 * Nombre
-  *`1 2.5 3.9 ...`*
+  * `1 2.5 3.9 ...`
 * Nombre négatif
 `-1 -2.5 -3 .9...`
 * Addition `+` `plus`
