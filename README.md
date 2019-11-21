@@ -4,13 +4,14 @@ Développement d'un langage de programmation
 ## I - Particularité du language
 
 ## II - Arithmétique
-* nombre
-* nombre neg
-* +
-* -
-* /
-* *
-* ()
+* Nombre
+  `1 2 3`
+* Nombre negatif
+* Addition (+)
+* Soustraction (-)
+* Division (/)
+* Multiplication (\*)
+* Gestion de priorité (Parenthèse)
 
 ## III - Gestion des variables
 * a=;
