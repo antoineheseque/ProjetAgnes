@@ -290,22 +290,26 @@ void start(){
 int main(int argc, char **argv) {
   cout << "Démarrage du programme ..." << endl;
 	srand (time(NULL));
-	if(argc  != 2) {
+  FILE* file;
+	if(argc == 2) {
+    file = fopen(argv[1],"r");
+  	if(file == NULL) {
+      cout << "[Erreur] Aucun fichier " << argv[1] << " trouvé, passage en mode console." << endl << endl;
+
+  		yyin = stdin;
+  	}
+  	else{
+  		yyin = file;   // now  flex  reads  from  file
+  	}
+	}
+  else{
     cout << "[Erreur] Entrez la commande suivante: ./agnes.Ag nomFichier.a" << endl;
     cout << "[Erreur] Passage en mode console." << endl;
 		yyin = stdin;
-	}
-	FILE* file = fopen(argv[1],"r");
-	if(file == NULL) {
-    cout << "[Erreur] Aucun fichier " << argv[1] << " trouvé, passage en mode console." << endl << endl;
-
-		yyin = stdin;
-	}
-	else{
-		yyin = file;   // now  flex  reads  from  file
-	}
+  }
   yyparse();
 
   start();
-	fclose(file);
+
+  fclose(file);
 }

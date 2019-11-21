@@ -1,0 +1,20 @@
+/* Demander a */
+>>"Quel valeur de a voulez vous:";
+<<a;
+si(a égal à 5){
+  >>"a == 5";
+  si(a == 5){
+    >>"a == 5 2eme fois";
+    a=a+1;
+    si(a == 6){
+      >>"a == 6";
+    }
+    sinon{
+      >>"a != 6";
+    }
+  }
+
+}
+sinon{
+  >>"a != 5";
+}

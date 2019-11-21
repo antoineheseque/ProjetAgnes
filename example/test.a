@@ -1,7 +1,12 @@
 b=0;
 >>"Boucle while";
 tant que(b<5){
-  b=b+1;
-  >>"Pénis n°";
+  a=0;
+  tant que(a<2){
+    a=a+1;
+    >>a;
+  }
+  >>"n°";
   >>b;
+  b=b+1;
 }
