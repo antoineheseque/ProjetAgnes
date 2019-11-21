@@ -32,8 +32,12 @@ Ce langage est un langage mathématique, il vous permet de pouvoir automatiser c
 *L'opération situé dans les parenthèses sera prioritaire*
 
 ## III - Gestion des variables
-* Déclaration de variable `a=;`
+* Déclaration de variable
+  * `=` `var =`
+  * `egal` `var egal`
 * Déclaration d'une variable comme opération de deux autres `a=a+b;`
+  * `var = var + var`
+  * `var egal var plus var`
 
 ## IV - Fonctions de base
 ### Arithmétique
