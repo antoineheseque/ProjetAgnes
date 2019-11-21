@@ -13,18 +13,18 @@ Ce langage est un langage mathématique, il vous permet de pouvoir automatiser c
 ## II - Arithmétique
 * Nombre
   `1 2.5 3.9 ...`
-* Nombre negatif
+* Nombre négatif
 `-1 -2.5 -3 .9...`
-* Addition `+`
-  `Nombre + Nombre`
-* Soustraction `-`
-  `Nombre - Nombre`
-* Division `/`
+* Addition `+` `plus`
+  `Nombre + Nombre` `Nombre plus Nombre`
+* Soustraction `-` `moins`
+  `Nombre - Nombre` `Nombre moins Nombre`
+* Division `/` `divise`
   `Nombre / Nombre`
-* Multiplication `*`
-  `Nombre * Nombre`
-* Gestion de priorité `()`
-  `Nombre * (Nombre + Nombre)`
+* Multiplication `*` `fois`
+  `Nombre * Nombre` `Nombre fois Nombre`
+* Gestion de priorité `()` `parenthèse gauche parenthèse droite`
+  `Nombre * (Nombre + Nombre)` `Nombre fois parenthèse gauche Nombre + Nombre parenthèse droite`
 
 *L'opération situé dans la parenthèse sera prioritaire*
 
@@ -35,13 +35,14 @@ Ce langage est un langage mathématique, il vous permet de pouvoir automatiser c
 ## IV - Fonctions de base
 ### Arithmétique
 
-* Exponentielle `exp()``exp(Nombre)` _bientot_
-* Pi `pi` _bientot_
-* Nombre aléatoire `rand``rand(Nombre)` _bientot_
-* Factoriel `!``Nombre!`
+* Fonction exponentielle `exp()` `exp(Nombre)` _bientot_
+* Nombre pi `pi` _bientot_
+* Nombre aléatoire `rand` `rand(Nombre)` _bientot_
+* Fonction factoriel `!` `Nombre!` _bientot_
+
 ### Geometrique
-* sin (bientot)
-* cos (bientot)
+* Fonction sinus `sin` `sin(Nombre)` _bientot_
+* Fonction cosinus `cos` `cos(Nombre)` _bientot_
 
 ### Affichage
 * >> ou afficher ou ...
