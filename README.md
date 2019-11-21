@@ -18,7 +18,8 @@ Développement d'un langage de programmation
   `Nombre * Nombre`
 * Gestion de priorité `()`
   `Nombre * (Nombre + Nombre)`
-  _L'opération situé dans la parenthèse sera prioritaire_
+  
+  color:#C0C0C0 _L'opération situé dans la parenthèse sera prioritaire_
 
 ## III - Gestion des variables
 * a=;
