@@ -3,6 +3,13 @@ Développement d'un langage de programmation
 
 ## I - Particularité du language
 
+Ce langage est une langage mathématique, il vous permet de pouvoir automatiser certaine opération facilement et dans la langue de Molière !
+
+Quelque petite chose à connaitre :
+
+A la fin d'une instruction, veillez à mettre un `;`
+Pour ajouter un commentaire, rien de plus simple, un `*` au début de la ligne que vous souhaitez commenter et votre ligne sera commenté.
+
 ## II - Arithmétique
 * Nombre
   `1 2 3 ...`
@@ -19,13 +26,11 @@ Développement d'un langage de programmation
 * Gestion de priorité `()`
   `Nombre * (Nombre + Nombre)`
 
-<span style="color:red"> text</span>
-
-<span style="color:grey">some *L'opération situé dans la parenthèse sera prioritaire* text</span>.
+*L'opération situé dans la parenthèse sera prioritaire*
 
 ## III - Gestion des variables
-* a=;
-* a=a+b;
+* Déclaration de variable `a=;`
+* Déclaration d'une variable comme opération de deux autres `a=a+b;`
 
 ## IV - Fonctions de base
 ### Arithmétique
