@@ -10,10 +10,14 @@ Développement d'un langage de programmation
 `-1 -2 -3 ...`
 * Addition `+`
   `Nombre + Nombre`
-* Soustraction (-)
-* Division (/)
-* Multiplication (\*)
-* Gestion de priorité (Parenthèse)
+* Soustraction `-`
+  `Nombre - Nombre`
+* Division `/`
+  `Nombre / Nombre`
+* Multiplication `*`
+  `Nombre * Nombre`
+* Gestion de priorité `()`
+  `Nombre * (Nombre + Nombre)`
 
 ## III - Gestion des variables
 * a=;
