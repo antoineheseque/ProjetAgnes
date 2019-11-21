@@ -89,13 +89,15 @@ Ce langage est un langage mathématique, il vous permet de pouvoir automatiser c
   * `a supérieur à b`
 
 ### Forme
-* si(condition){
+* Si, sinon
+
+`si(condition){
 
 }
-* sinon{
+sinon{
 
 }
- ...
+`
 
 * ou si tout seul; (bientot)
 
