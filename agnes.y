@@ -47,9 +47,10 @@ void UnknownVarError(string s);
 %token<aString> TEXT
 
 /* CONDITIONS */
-%token<address> IF WHILE
+%token<address> IF WHILE FOR
 %token ELSE REPEAT JMP COND PRINT REGVAR GETVAR INPUT
 %token INF SUP INFOREQUAL SUPOREQUAL IFEQUAL IFDIFFERENT
+%token FOR2 FOR3
 
 /* Math */
 %token PLUS MINUS MULTIPLY DIVIDE
@@ -93,13 +94,21 @@ line:
     elsecond                        { instruction[$1.ic_false].second.aDouble = ic; }
 
   | WHILE { $1.ic_goto = ic; }
-    LP condition RP                 { $1.ic_cond = ic; type t; t.aDouble=0; ins(COND,t); cout << "Premier IC: " << ic << endl; }
+    LP condition RP                 { $1.ic_cond = ic; type t; t.aDouble=0; ins(COND,t); }
     LA bloc RA                      { $1.ic_false = ic;
                                       instruction[$1.ic_cond].second.aDouble = $1.ic_false+1;
                                       type t;
                                       t.aDouble=$1.ic_goto;
                                       ins(JMP,t);
-                                      cout << "IC Final: " << ic << endl;
+                                    }
+  | FOR LP VARIABLE EQUAL number SEPARATOR { type t; strcpy(t.aString,$3); ins(REGVAR,t); $1.ic_goto = ic; }
+    condition SEPARATOR             { $1.ic_cond = ic; type t; t.aDouble=0; ins(COND,t); }
+    VARIABLE EQUAL number RP        { type t; strcpy(t.aString,$3); ins(REGVAR,t); }
+    LA bloc RA                      { $1.ic_false = ic;
+                                      instruction[$1.ic_cond].second.aDouble = $1.ic_false+1;
+                                      type t;
+                                      t.aDouble=$1.ic_goto;
+                                      ins(JMP,t);
                                     }
 ;
 
@@ -170,6 +179,7 @@ void start(){
     type z; // Initialiser un nouveau type a chaque fois pour le résultat z;
     switch(ins.first){
       case '+':
+
         x = unstack(stack);
         y = unstack(stack);
         z.aDouble = y.aDouble + x.aDouble;
@@ -278,7 +288,8 @@ void start(){
           z.aDouble = stod(str);
         }
         else{
-          cout << "Le texte entré n'est pas un nombre." << endl;
+          cout << "Le texte entré n'est pas un nombre. 0 a été entré." << endl;
+          z.aDouble = 0;
         }
         variable[ins.second.aString]=z;
         ic++;

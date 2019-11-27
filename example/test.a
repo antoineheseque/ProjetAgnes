@@ -1,7 +1,7 @@
 b=0;
 >>"Boucle while";
 tant que(b<5){
-  a=0;
+  c=0;
   tant que(a<2){
     a=a+1;
     >>a;
