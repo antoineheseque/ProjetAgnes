@@ -102,11 +102,10 @@ Ce langage est un langage mathématique, il vous permet de pouvoir automatiser c
 ## VI - Boucles
 * Boucle Pour (FOR)
 ```
-Pour(itérateur =0;itérateur<valeur;itérateur++){
+Pour(itérateur=0;itérateur<valeur;itérateur=équation){
   /* Instruction */
 }
 
-### Boucle TANT QUE (WHILE)
 ```
 
 * Boucle Tant que (WHILE)
@@ -114,6 +113,4 @@ Pour(itérateur =0;itérateur<valeur;itérateur++){
 Tant que(a<b){
   /* Instruction */
 }
-
-### Boucle TANT QUE (WHILE)
 ```
