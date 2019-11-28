@@ -26,7 +26,7 @@
 \/[*]([^*]|([*][^/]))*[*]+\/ 											{ } // printf("%s\n", yytext); A rajouter si on veux afficher les commentaires
 \"(.*?)\"																					{ strcpy(yylval.aString, yytext); return TEXT; }
 pi|PI|π																						{ return PI; }
-"cos"|"cosinus"																		{ return COS; }
+cos|cosinus																				{ return COS; }
 "sin"|"sinus"																			{ return SIN; }
 "tan"|"tangente"																	{ return TAN; }
 ";"|"point virgule" 															{ return SEPARATOR; }

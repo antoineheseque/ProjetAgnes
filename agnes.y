@@ -17,8 +17,8 @@ typedef struct addr {
 } t_address;
 
 typedef struct type_ {
-  double aDouble;
-  char aString[256];
+  double aDouble = 0;
+  char aString[256] = "";
   bool aBool;
 } type;
 
@@ -86,8 +86,7 @@ bloc:
 ;
 
 line:
-  PRINT number SEPARATOR 	  				{ type t; t.aDouble=0; ins(PRINT,t); }
-  | PRINT TEXT SEPARATOR 	  			  { type t; strcpy(t.aString,$2); ins(TEXT,t); } /*t.aString=ict; ins(TEXT,t); strcpy(text[ict],$2); ict++;*/
+  PRINT print SEPARATOR             { }
   | INPUT VARIABLE SEPARATOR 	  		{ type t; strcpy(t.aString,$2); ins(INPUT,t); }
   | VARIABLE EQUAL number SEPARATOR { type t; strcpy(t.aString,$1); ins(REGVAR,t); }
   | IF LP condition RP              { $1.ic_goto = ic; type t; t.aDouble=0; ins(COND,t); }
@@ -117,13 +116,18 @@ elsecond:
   | ELSE LA bloc RA                 { }
 ;
 
+print:
+  number  	  				              { type t; t.aDouble=0; ins(PRINT,t); }
+  | TEXT              	  			    { type t; strcpy(t.aString,$1); ins(TEXT,t); }
+;
+
 number:
 	NUMBER 														{ type t; t.aDouble=$1; ins(NUMBER, t); }
   | PI                              { type t; t.aDouble=M_PI; ins(NUMBER, t); }
   | MINUS NUMBER %prec NEG 					{ type t; t.aDouble=-$2; ins(NUMBER, t); }
   | LP number RP 										{ }
 	| instruction	   									{ }
-  | functions                       { type t; t.aDouble=$1; ins(NUMBER, t); }
+  | functions                       { }
 	| VARIABLE												{ type t; strcpy(t.aString,$1); ins(GETVAR, t); } /*if(!variable.count($1)) UnknownVarError($1); else $$ = variable[$1];*/
 ;
 
@@ -144,11 +148,10 @@ instruction:
 ;
 
 functions:
-	COS LP number RP 			  					{ $$ = cos($3); }
-	| SIN LP number RP 								{ $$ = sin($3); }
-	| TAN LP number RP 								{ $$ = tan($3); }
-  | FACT LP number RP			          { type t; t.aDouble=0; ins(FACT, t); }
-  | number FACT		                  { type t; t.aDouble=0; ins(FACT, t); }
+	COS LP number RP 			  					{ type t; t.aDouble=0; ins(COS, t); }
+	| SIN LP number RP 								{ type t; t.aDouble=0; ins(SIN, t); }
+	| TAN LP number RP 								{ type t; t.aDouble=0; ins(TAN, t); }
+  | FACT LP number RP		            { type t; t.aDouble=0; ins(FACT, t); }
 ;
 
 %%
@@ -170,7 +173,7 @@ type unstack(vector<type> &stack) {
 
 void start(){
   vector<type> stack;
-  type x,y;
+  //type x,y;
 
   cout << "Chargement de la pile ..." << endl;
 
@@ -179,10 +182,9 @@ void start(){
     //cout << "Nbr instructions: " << instruction.size() << endl;
     auto ins = instruction[ic];
 
-    type z; // Initialiser un nouveau type a chaque fois pour le résultat z;
+    type x,y,z; // Initialiser un nouveau type a chaque fois pour le résultat z;
     switch(ins.first){
       case '+':
-
         x = unstack(stack);
         y = unstack(stack);
         z.aDouble = y.aDouble + x.aDouble;
@@ -281,9 +283,29 @@ void start(){
       case FACT:
         x = unstack(stack);
         z.aDouble = 1;
-        for(i = x; i > 1; i--){
-          z.aDouble*= i
+        for(double i = x.aDouble; i > 1.0; i=i-1.0){
+          z.aDouble *= i;
         }
+        stack.push_back(z);
+        ic++;
+        break;
+      case COS:
+        x = unstack(stack);
+        z.aDouble = cos(x.aDouble);
+        stack.push_back(z);
+        ic++;
+        break;
+      case SIN:
+        x = unstack(stack);
+        z.aDouble = sin(x.aDouble);
+        stack.push_back(z);
+        ic++;
+        break;
+      case TAN:
+        x = unstack(stack);
+        z.aDouble = tan(x.aDouble);
+        stack.push_back(z);
+        ic++;
         break;
       case TEXT:
         cout << ins.second.aString << endl;
@@ -308,6 +330,28 @@ void start(){
   }
 }
 
+string nom(int instruction){
+  switch (instruction){
+   case '+'     : return "ADD";
+   case '*'     : return "MUL";
+   case GETVAR  : return "GET";
+   case COS     : return "COS";
+   case PRINT   : return "PRINT";
+   case REGVAR  : return "SET";
+   case NUMBER  : return "NUM";
+   case JMP     : return "JMP";   // Unconditional Jump
+   default  : return to_string (instruction);
+   }
+}
+
+void print_program(){
+  cout << "==== CODE GENERE ====" << endl;
+  int i = 0;
+  for (auto ins : instruction )
+    cout << i++ << '\t' << nom(ins.first) << "\t" << ins.second.aDouble << "\t |\t " << ins.second.aString << endl;
+  cout << "=====================" << endl;
+}
+
 int main(int argc, char **argv) {
   cout << "Démarrage du programme ..." << endl;
 	srand (time(NULL));
@@ -330,6 +374,7 @@ int main(int argc, char **argv) {
   }
   yyparse();
 
+  print_program();
   start();
 
   fclose(file);
