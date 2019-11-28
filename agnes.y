@@ -56,6 +56,7 @@ void UnknownVarError(string s);
 %token PLUS MINUS MULTIPLY DIVIDE
 %token EQUAL PI
 %token COS SIN TAN
+%token FACT
 
 /* Parentheses */
 %token LP RP /* ( ) */
@@ -146,6 +147,8 @@ functions:
 	COS LP number RP 			  					{ $$ = cos($3); }
 	| SIN LP number RP 								{ $$ = sin($3); }
 	| TAN LP number RP 								{ $$ = tan($3); }
+  | FACT LP number RP			          { type t; t.aDouble=0; ins(FACT, t); }
+  | number FACT		                  { type t; t.aDouble=0; ins(FACT, t); }
 ;
 
 %%
@@ -274,6 +277,13 @@ void start(){
         x = unstack(stack);
         cout << x.aDouble << endl;
         ic++;
+        break;
+      case FACT:
+        x = unstack(stack);
+        z.aDouble = 1;
+        for(i = x; i > 1; i--){
+          z.aDouble*= i
+        }
         break;
       case TEXT:
         cout << ins.second.aString << endl;

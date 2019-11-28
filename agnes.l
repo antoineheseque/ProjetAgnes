@@ -53,6 +53,7 @@ pi|PI|π																						{ return PI; }
 "supérieur à"|">"|"superieur a"										{ return SUP; }
 "inférieur ou égal à"|"<="|"inferieur ou egal a"	{ return INFOREQUAL; }
 "supérieur ou égal à"|">="|"superieur ou egal a"	{ return SUPOREQUAL; }
+"factoriel"|"!"																		{ return FACT; }
 [a-zA-Z][a-zA-Z0-9]* 															{ strcpy(yylval.aString, yytext); return VARIABLE; }
 [0-9]+(\.[0-9]+)? 																{ yylval.aDouble = atof(yytext); return NUMBER; }
 . 																								{ }
