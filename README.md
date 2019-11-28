@@ -94,14 +94,26 @@ Ce langage est un langage mathématique, il vous permet de pouvoir automatiser c
   Si(condition){
     /* Instruction */
   }
-  Sinon{
-    /* Instruction (facultatif)*/
+  Sinon{ /* (facultatif) */
+    /* Instruction */
   }
 ```
 
 ## VI - Boucles
-### Boucle POUR (FOR)
-
-_bientot_
+* Boucle Pour (FOR)
+```
+Pour(itérateur =0;itérateur<valeur;itérateur++){
+  /* Instruction */
+}
 
 ### Boucle TANT QUE (WHILE)
+```
+
+* Boucle Tant que (WHILE)
+```
+Tant que(a<b){
+  /* Instruction */
+}
+
+### Boucle TANT QUE (WHILE)
+```
