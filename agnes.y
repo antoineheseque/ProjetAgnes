@@ -282,10 +282,11 @@ void start(){
         break;
       case FACT:
         x = unstack(stack);
-        z.aDouble = 1;
+        z.aDouble = 1.0;
         for(double i = x.aDouble; i > 1.0; i=i-1.0){
           z.aDouble *= i;
         }
+
         stack.push_back(z);
         ic++;
         break;
@@ -332,12 +333,21 @@ void start(){
 
 string nom(int instruction){
   switch (instruction){
-   case '+'     : return "ADD";
-   case '*'     : return "MUL";
-   case GETVAR  : return "GET";
+   case '+'     : return "ADDITIO";
+   case '*'     : return "MULTIPL";
+   case '/'     : return "DIVIDE";
+   case '=='    : return "EQUAL";
+   case '!='    : return "DIFFERENT";
+   case COND    : return "CONDITION";
+   case INPUT   : return "INPUT";
+   case TEXT    : return "TEXT";
+   case GETVAR  : return "GETVAR";
    case COS     : return "COS";
+   case SIN     : return "SIN";
+   case TAN     : return "TAN";
    case PRINT   : return "PRINT";
-   case REGVAR  : return "SET";
+   case REGVAR  : return "SETVAR";
+   case FACT    : return "FACT";
    case NUMBER  : return "NUM";
    case JMP     : return "JMP";   // Unconditional Jump
    default  : return to_string (instruction);
