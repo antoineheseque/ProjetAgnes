@@ -49,7 +49,7 @@ Ce langage est un langage mathématique, il vous permet de pouvoir automatiser c
 * Nombre aléatoire _bientot_
   * `rand` `rand(Nombre)`
   * `aleatoire` `aleatoire(Nombre)`
-* Fonction factoriel _bientot_
+* Fonction factoriel 
   * `!` `Nombre!`
   * `factoriel` `factoriel(Nombre)`
 
