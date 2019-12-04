@@ -94,8 +94,7 @@ int main(int argc, char* argv[]) {
                     std::cout << "Fichier sauvegardé! " << saveFileName << "\n";
                 }
                 std::cout << "Chargement du fichier ...\n";
-                system("cd ..");
-                string c = "./agnes.Ag example/" + str;
+                string c = "gnome-terminal --title=\"Exécution du programme ...\" -- bash -c 'pwd && cd Desktop/ProjetAgnes/ && ./agnes.Ag example/" + str + "' &";
                 system(c.c_str());
             }
 

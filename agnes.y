@@ -388,7 +388,7 @@ int main(int argc, char **argv) {
 		yyin = stdin;
   }
   yyparse();
-  sf::RenderWindow window(sf::VideoMode(800, 600), "My window");
+  //sf::RenderWindow window(sf::VideoMode(800, 600), "My window");
 
   print_program();
   start();
