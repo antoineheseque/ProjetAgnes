@@ -1,4 +1,6 @@
 %{
+#include <SFML/Window.hpp>
+#include <SFML/Graphics.hpp>
 #include <iostream>
 #include <string>
 #include <cstring>
@@ -355,6 +357,7 @@ string nom(int instruction){
 }
 
 void print_program(){
+  system("clear");
   cout << "==== CODE GENERE ====" << endl;
   int i = 0;
   for (auto ins : instruction )
@@ -383,9 +386,28 @@ int main(int argc, char **argv) {
 		yyin = stdin;
   }
   yyparse();
+  sf::RenderWindow window(sf::VideoMode(800, 600), "My window");
 
   print_program();
   start();
 
   fclose(file);
+  /*sf::CircleShape shape(100.f);
+  shape.setFillColor(sf::Color::Green);
+
+  while (window.isOpen())
+  {
+      sf::Event event;
+      while (window.pollEvent(event))
+      {
+          if (event.type == sf::Event::Closed)
+              window.close();
+      }
+
+      window.clear();
+      window.draw(shape);
+      window.display();
+  }*/
+
+  return 0;
 }
