@@ -20,14 +20,20 @@ int main(int argc, char* argv[]) {
 
     std::string saveFileName;
     std::string loadFileName;
-
+    std::cout << "Liste des fichiers déjà existant:" << std::endl;
+    system("cd ~/Desktop/ProjetAgnes/example/ && ls");
+    std::cout << std::endl;
     std::cout << "Entrez le nom du fichier à éditer/sauvegarder: ";
     std::string str;
     std::getline(std::cin, str);
     saveFileName = workingDirectory + "../example/" + str;
     loadFileName = workingDirectory + "../example/" + str;
 
-    sf::RenderWindow window(sf::VideoMode(720, 405), "Editeur Agnes v1.0.0");
+    std::cout << std::endl << "Bienvenue sur l'éditeur Agnès v1.0.1." << std::endl
+    << "Pour sauvegarder votre fichier, appuyez sur CTRL+S ." << std::endl
+    << "Pour tester votre programme, appuyez sur CTRL+B ." << std::endl;
+
+    sf::RenderWindow window(sf::VideoMode(1080, 720), "Editeur Agnes v1.0.1");
     window.setVerticalSyncEnabled(true);
     sf::Color backgroundColor = sf::Color(21, 29, 45);
 
@@ -88,8 +94,9 @@ int main(int argc, char* argv[]) {
                     std::cout << "Fichier sauvegardé! " << saveFileName << "\n";
                 }
                 std::cout << "Chargement du fichier ...\n";
-                system("cd && make");
-                system("./agnes.Ag");
+                system("cd ..");
+                string c = "./agnes.Ag example/" + str;
+                system(c.c_str());
             }
 
             inputController.handleEvents(document, textView, window, event);

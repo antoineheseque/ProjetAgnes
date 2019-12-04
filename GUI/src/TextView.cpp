@@ -6,7 +6,7 @@ TextView::TextView(const sf::RenderWindow &window, const sf::String &workingDire
 
     // this->font.loadFromFile("fonts/FreeMono.ttf");
     this->font.loadFromFile(workingDirectory + "fonts/DejaVuSansMono.ttf");
-    this->fontSize = 18;
+    this->fontSize = 20;
 
     // TODO: Cambiarlo en relacion a la fontsize
     this->marginXOffset = 45;
@@ -98,7 +98,7 @@ void TextView::duplicateCursorLine(TextDocument &document) {
 }
 
 void TextView::swapSelectedLines(TextDocument &document, bool swapWithUp) {
-    
+
     auto lastSelection = this->content.getLastSelection();
     // If there is no selection, consider the cursor a selection. Design choice.
     if (!lastSelection.activa) {
