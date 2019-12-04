@@ -9,6 +9,9 @@
 #include <regex>
 #include <vector>
 #include "libraries/mplib/matplotlibcpp.h"
+#include <curl/curl.h>
+#include <jsoncpp/json/json.h>
+
 namespace plt = matplotlibcpp;
 
 using namespace std;
@@ -354,7 +357,7 @@ string nom(int instruction){
    case FACT    : return "FACT";
    case NUMBER  : return "NUM";
    case JMP     : return "JMP";   // Unconditional Jump
-   default  : return to_string (instruction);
+   default      : return to_string (instruction);
    }
 }
 
@@ -365,6 +368,93 @@ void print_program(){
   for (auto ins : instruction )
     cout << i++ << '\t' << nom(ins.first) << "\t" << ins.second.aDouble << "\t |\t " << ins.second.aString << endl;
   cout << "=====================" << endl;
+}
+
+namespace
+{
+    std::size_t callback(
+            const char* in,
+            std::size_t size,
+            std::size_t num,
+            std::string* out)
+    {
+        const std::size_t totalBytes(size * num);
+        out->append(in, totalBytes);
+        return totalBytes;
+    }
+}
+
+int GetJSON(std::string url2)
+{
+    const std::string url(url2);
+
+    CURL* curl = curl_easy_init();
+
+    // Set remote URL.
+    curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+
+    // Don't bother trying IPv6, which would increase DNS resolution time.
+    curl_easy_setopt(curl, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
+
+    // Don't wait forever, time out after 10 seconds.
+    curl_easy_setopt(curl, CURLOPT_TIMEOUT, 10);
+
+    // Follow HTTP redirects if necessary.
+    curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
+
+    // Response information.
+    int httpCode(0);
+    std::unique_ptr<std::string> httpData(new std::string());
+
+    // Hook up data handling function.
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, callback);
+
+    // Hook up data container (will be passed as the last parameter to the
+    // callback handling function).  Can be any pointer type, since it will
+    // internally be passed as a void pointer.
+    curl_easy_setopt(curl, CURLOPT_WRITEDATA, httpData.get());
+
+    // Run our HTTP GET command, capture the HTTP response code, and clean up.
+    curl_easy_perform(curl);
+    curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &httpCode);
+    curl_easy_cleanup(curl);
+
+    if (httpCode == 200)
+    {
+        std::cout << "\nGot successful response from " << url << std::endl;
+
+        // Response looks good - done using Curl now.  Try to parse the results
+        // and print them out.
+        Json::Value jsonData;
+        Json::Reader jsonReader;
+
+        if (jsonReader.parse(*httpData, jsonData))
+        {
+            std::cout << "La courbe est bien récupérée, conversion et affichage ..." << std::endl;
+            std::cout << "\nJSON data received:" << std::endl;
+            std::cout << jsonData.toStyledString() << std::endl;
+
+            const std::string dateString(jsonData["date"].asString());
+            //const std::size_t unixTimeMs(jsonData["milliseconds_since_epoch"].asUInt64());
+            //const std::string timeString(jsonData["time"].asString());
+
+            //std::cout << "\tDate string: " << dateString << std::endl;
+            std::cout << std::endl;
+        }
+        else
+        {
+            std::cout << "Could not parse HTTP data as JSON" << std::endl;
+            std::cout << "HTTP data was:\n" << *httpData.get() << std::endl;
+            return 1;
+        }
+    }
+    else
+    {
+        std::cout << "Couldn't GET from " << url << " - exiting" << std::endl;
+        return 1;
+    }
+
+    return 0;
 }
 
 int main(int argc, char **argv) {
@@ -398,58 +488,7 @@ int main(int argc, char **argv) {
   //plt::plot({1,3,2,4});
   //plt::show();
 
-  /*std::string ServerContent::DownloadJSON(std::string URL)
-  {
-      CURL *curl;
-      CURLcode res;
-      struct curl_slist *headers=NULL; // init to NULL is important
-      std::ostringstream oss;
-      headers = curl_slist_append(headers, "Accept: application/json");
-      headers = curl_slist_append(headers, "Content-Type: application/json");
-      headers = curl_slist_append(headers, "charsets: utf-8");
-      curl = curl_easy_init();
-
-      if (curl)
-      {
-          curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
-          curl_easy_setopt(curl, CURLOPT_URL, URL.c_str());
-          curl_easy_setopt(curl, CURLOPT_HTTPGET,1);
-          curl_easy_setopt(curl,CURLOPT_WRITEFUNCTION,writer);
-          res = curl_easy_perform(curl);
-
-          if (CURLE_OK == res)
-          {
-              char *ct;
-              res = curl_easy_getinfo(curl, CURLINFO_CONTENT_TYPE, &ct);
-              if((CURLE_OK == res) && ct)
-                  return *DownloadedResponse;
-          }
-      }
-
-      curl_slist_free_all(headers);
-  }
-
-
-  static std::string *DownloadedResponse;
-
-  static int writer(char *data, size_t size, size_t nmemb, std::string *buffer_in)
-  {
-
-      // Is there anything in the buffer?
-      if (buffer_in != NULL)
-      {
-          // Append the data to the buffer
-          buffer_in->append(data, size * nmemb);
-
-          // How much did we write?
-          DownloadedResponse = buffer_in;
-
-          return size * nmemb;
-      }
-
-      return 0;
-
-  }*/
+  //GetJSON("https://api.blockchain.info/charts/market-price?format=json");
 
   /*sf::CircleShape shape(100.f);
   shape.setFillColor(sf::Color::Green);
@@ -467,6 +506,5 @@ int main(int argc, char **argv) {
       window.draw(shape);
       window.display();
   }*/
-
   return 0;
 }

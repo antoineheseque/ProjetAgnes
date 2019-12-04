@@ -113,6 +113,7 @@ void InputController::handleKeyPressedEvents(TextDocument &document, TextView &t
             textView.moveCursorToEnd(document, isShiftPressed);
             return;
         } else if (isHomePressed) {  //Move to LINE_START
+
             textView.moveCursorToStart(document, isShiftPressed);
             return;
         }
@@ -191,7 +192,6 @@ void InputController::handleTextEnteredEvent(TextDocument &document, TextView &t
     if (event.type == sf::Event::TextEntered) {
         bool ctrlPressed = sf::Keyboard::isKeyPressed(sf::Keyboard::LControl);
         sf::String input(event.text.unicode);
-
         if (event.text.unicode == '\b') {
             bool selecionDeleted = textView.deleteSelections(document);
             if (!selecionDeleted) {
@@ -208,7 +208,6 @@ void InputController::handleTextEnteredEvent(TextDocument &document, TextView &t
                 // TODO: Cantidad de espacios de tab una variable
                 input = "    ";
             }
-
             textView.deleteSelections(document);
             textView.addTextInCursorPos(input, document);
         }

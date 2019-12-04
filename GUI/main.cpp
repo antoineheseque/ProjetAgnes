@@ -33,7 +33,7 @@ int main(int argc, char* argv[]) {
     << "Pour sauvegarder votre fichier, appuyez sur CTRL+S ." << std::endl
     << "Pour tester votre programme, appuyez sur CTRL+B ." << std::endl;
 
-    sf::RenderWindow window(sf::VideoMode(1080, 720), "Editeur Agnes v1.0.1");
+    sf::RenderWindow window(sf::VideoMode(2160, 1200), "Editeur Agnes v1.0.1");
     window.setVerticalSyncEnabled(true);
     sf::Color backgroundColor = sf::Color(21, 29, 45);
 
@@ -45,7 +45,7 @@ int main(int argc, char* argv[]) {
 
     // BACKGROUND
     sf::Texture texture;
-    if (!texture.loadFromFile("img/index.jpeg"))
+    if (!texture.loadFromFile(workingDirectory + "img/index.jpeg"))
     { }
     sf::Sprite background(texture);
     sf::Vector2u size = texture.getSize();
@@ -83,7 +83,6 @@ int main(int argc, char* argv[]) {
             }
             if (event.key.code == sf::Keyboard::S && sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
                 if (document.hasChanged()){
-
                     document.saveFile(saveFileName);
                     std::cout << "Fichier sauvegardé! " << saveFileName << "\n";
                 }
@@ -94,7 +93,7 @@ int main(int argc, char* argv[]) {
                     std::cout << "Fichier sauvegardé! " << saveFileName << "\n";
                 }
                 std::cout << "Chargement du fichier ...\n";
-                string c = "gnome-terminal --title=\"Exécution du programme ...\" -- bash -c 'pwd && cd Desktop/ProjetAgnes/ && ./agnes.Ag example/" + str + "' &";
+                string c = "gnome-terminal --title=\"Exécution du programme ...\" -- bash -c 'cd Desktop/ProjetAgnes/ && ./agnes.Ag example/" + str + ";read line'";
                 system(c.c_str());
             }
 

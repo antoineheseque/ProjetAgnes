@@ -6,7 +6,7 @@ TextView::TextView(const sf::RenderWindow &window, const sf::String &workingDire
 
     // this->font.loadFromFile("fonts/FreeMono.ttf");
     this->font.loadFromFile(workingDirectory + "fonts/DejaVuSansMono.ttf");
-    this->fontSize = 20;
+    this->fontSize = 40;
 
     // TODO: Cambiarlo en relacion a la fontsize
     this->marginXOffset = 45;
