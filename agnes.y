@@ -11,6 +11,8 @@
 #include "libraries/mplib/matplotlibcpp.h"
 #include <curl/curl.h>
 #include <jsoncpp/json/json.h>
+#include <cstdint>
+#include <memory>
 
 namespace plt = matplotlibcpp;
 
@@ -39,6 +41,7 @@ extern FILE *yyin;
 extern int yyerror(char *);
 extern int yylex(void);
 void Div0Error(void);
+int GetJSON(string);
 void UnknownVarError(string s);
 %}
 
@@ -64,6 +67,9 @@ void UnknownVarError(string s);
 %token EQUAL PI
 %token COS SIN TAN
 %token FACT
+
+/* WEB */
+%token BTC URL HTML JSON LAUNCH
 
 /* Parentheses */
 %token LP RP /* ( ) */
@@ -94,6 +100,7 @@ bloc:
 
 line:
   PRINT print SEPARATOR             { }
+  | web SEPARATOR                   { }
   | INPUT VARIABLE SEPARATOR 	  		{ type t; strcpy(t.aString,$2); ins(INPUT,t); }
   | VARIABLE EQUAL number SEPARATOR { type t; strcpy(t.aString,$1); ins(REGVAR,t); }
   | IF LP condition RP              { $1.ic_goto = ic; type t; t.aDouble=0; ins(COND,t); }
@@ -121,6 +128,12 @@ line:
 
 elsecond:
   | ELSE LA bloc RA                 { }
+;
+
+web:
+  LAUNCH LP TEXT RP                 { type t; strcpy(t.aString,$3); ins(LAUNCH,t); }
+  | PRINT HTML LP TEXT RP           { type t; strcpy(t.aString,$4); ins(URL,t); }
+  | PRINT JSON LP BTC RP            { type t; strcpy(t.aString,"\"https://api.blockchain.info/charts/market-price?format=json\""); ins(URL,t); }
 ;
 
 print:
@@ -176,6 +189,17 @@ type unstack(vector<type> &stack) {
   type t = stack[stack.size()-1];
   stack.pop_back();
   return t;
+}
+
+string convertText(string text){
+  string str = text;
+  str = str.substr(1, str.size() - 2);
+  return str;
+}
+
+void openWebsite(string url){
+  string str = "firefox " + convertText(url);
+  system(str.c_str());
 }
 
 void start(){
@@ -293,7 +317,6 @@ void start(){
         for(double i = x.aDouble; i > 1.0; i=i-1.0){
           z.aDouble *= i;
         }
-
         stack.push_back(z);
         ic++;
         break;
@@ -316,9 +339,16 @@ void start(){
         ic++;
         break;
       case TEXT:
-        cout << ins.second.aString << endl;
+        cout << convertText(ins.second.aString) << endl;
         ic++;
         break;
+      case URL:
+        GetJSON(convertText(ins.second.aString));
+        ic++;
+        break;
+      case LAUNCH:
+        openWebsite(ins.second.aString);
+        ic++;
       case INPUT:
         string str = "";
         getline(cin, str);
@@ -372,89 +402,91 @@ void print_program(){
 
 namespace
 {
-    std::size_t callback(
+    size_t callback(
             const char* in,
-            std::size_t size,
-            std::size_t num,
-            std::string* out)
+            size_t size,
+            size_t num,
+            string* out)
     {
-        const std::size_t totalBytes(size * num);
+        const size_t totalBytes(size * num);
         out->append(in, totalBytes);
         return totalBytes;
     }
 }
 
-int GetJSON(std::string url2)
+int GetJSON(string url)
 {
-    const std::string url(url2);
 
-    CURL* curl = curl_easy_init();
+  CURL* curl = curl_easy_init();
 
-    // Set remote URL.
-    curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+  // Set remote URL.
+  curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
 
-    // Don't bother trying IPv6, which would increase DNS resolution time.
-    curl_easy_setopt(curl, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
+  // Don't bother trying IPv6, which would increase DNS resolution time.
+  curl_easy_setopt(curl, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
 
-    // Don't wait forever, time out after 10 seconds.
-    curl_easy_setopt(curl, CURLOPT_TIMEOUT, 10);
+  // Don't wait forever, time out after 10 seconds.
+  curl_easy_setopt(curl, CURLOPT_TIMEOUT, 10);
 
-    // Follow HTTP redirects if necessary.
-    curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
+  // Follow HTTP redirects if necessary.
+  curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
 
-    // Response information.
-    int httpCode(0);
-    std::unique_ptr<std::string> httpData(new std::string());
+  // Response information.
+  int httpCode(0);
+  std::string* httpData(new std::string());
+  // Hook up data handling function.
+  curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, callback);
 
-    // Hook up data handling function.
-    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, callback);
+  // Hook up data container (will be passed as the last parameter to the
+  // callback handling function).  Can be any pointer type, since it will
+  // internally be passed as a void pointer.
+  curl_easy_setopt(curl, CURLOPT_WRITEDATA, httpData);
 
-    // Hook up data container (will be passed as the last parameter to the
-    // callback handling function).  Can be any pointer type, since it will
-    // internally be passed as a void pointer.
-    curl_easy_setopt(curl, CURLOPT_WRITEDATA, httpData.get());
+  // Run our HTTP GET command, capture the HTTP response code, and clean up.
+  curl_easy_perform(curl);
+  curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &httpCode);
+  //curl_easy_cleanup(curl); /// CECI CAUSE PROBLEME
 
-    // Run our HTTP GET command, capture the HTTP response code, and clean up.
-    curl_easy_perform(curl);
-    curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &httpCode);
-    curl_easy_cleanup(curl);
+  if (httpCode == 200)
+  {
+      std::cout << "\nGot successful response from " << url << std::endl;
 
-    if (httpCode == 200)
-    {
-        std::cout << "\nGot successful response from " << url << std::endl;
+      // Response looks good - done using Curl now.  Try to parse the results
+      // and print them out.
+      Json::Value jsonData;
+      Json::Reader jsonReader;
 
-        // Response looks good - done using Curl now.  Try to parse the results
-        // and print them out.
-        Json::Value jsonData;
-        Json::Reader jsonReader;
+      if (jsonReader.parse(*httpData, jsonData))
+      {
+          std::cout << "Successfully parsed JSON data" << std::endl;
+          std::cout << "\nJSON data received:" << std::endl;
+          std::cout << jsonData.toStyledString() << std::endl;
 
-        if (jsonReader.parse(*httpData, jsonData))
-        {
-            std::cout << "La courbe est bien récupérée, conversion et affichage ..." << std::endl;
-            std::cout << "\nJSON data received:" << std::endl;
-            std::cout << jsonData.toStyledString() << std::endl;
+          /*const std::string dateString(jsonData["date"].asString());
+          const std::size_t unixTimeMs(
+                  jsonData["milliseconds_since_epoch"].asUInt64());
+          const std::string timeString(jsonData["time"].asString());
 
-            const std::string dateString(jsonData["date"].asString());
-            //const std::size_t unixTimeMs(jsonData["milliseconds_since_epoch"].asUInt64());
-            //const std::string timeString(jsonData["time"].asString());
+          std::cout << "Natively parsed:" << std::endl;
+          std::cout << "\tDate string: " << dateString << std::endl;
+          std::cout << "\tUnix timeMs: " << unixTimeMs << std::endl;
+          std::cout << "\tTime string: " << timeString << std::endl;*/
+          std::cout << std::endl;
+      }
+      else
+      {
+          std::cout << "Could not parse HTTP data as JSON" << std::endl;
+          std::cout << "HTTP data was:\n" << *httpData << std::endl;
+          return 1;
+      }
+  }
+  else
+  {
+      std::cout << "Couldn't GET from " << url << " - exiting" << std::endl;
+      return 1;
+  }
 
-            //std::cout << "\tDate string: " << dateString << std::endl;
-            std::cout << std::endl;
-        }
-        else
-        {
-            std::cout << "Could not parse HTTP data as JSON" << std::endl;
-            std::cout << "HTTP data was:\n" << *httpData.get() << std::endl;
-            return 1;
-        }
-    }
-    else
-    {
-        std::cout << "Couldn't GET from " << url << " - exiting" << std::endl;
-        return 1;
-    }
-
-    return 0;
+  return 0;
 }
 
 int main(int argc, char **argv) {
@@ -488,7 +520,10 @@ int main(int argc, char **argv) {
   //plt::plot({1,3,2,4});
   //plt::show();
 
-  //GetJSON("https://api.blockchain.info/charts/market-price?format=json");
+  //GetJSON("https://antoineh.tech/");
+  //https://api.blockchain.info/charts/market-price?format=json
+  // http://date.jsontest.com/
+
 
   /*sf::CircleShape shape(100.f);
   shape.setFillColor(sf::Color::Green);
