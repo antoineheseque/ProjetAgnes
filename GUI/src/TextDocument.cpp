@@ -110,7 +110,6 @@ void TextDocument::addTextToPos(sf::String text, int line, int charN) {
     for (int i = 0; i < (int)text.getSize(); i++) {
         if (text[i] == '\n' || text[i] == 13) {          // text[i] == \n
             int newLineStart = bufferInsertPos + i + 1;  // Nueva linea comienza despues del nuevo \n
-            std::cout << "fepfkzepk" << std::endl;
 
             // Inserto O(#lineas) y uso busqueda binaria pues los inicios de lineas son crecientes
             this->lineBuffer.insert(

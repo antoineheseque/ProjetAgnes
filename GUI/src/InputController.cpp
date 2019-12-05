@@ -206,7 +206,7 @@ void InputController::handleTextEnteredEvent(TextDocument &document, TextView &t
         } else if (!ctrlPressed) {
             if (event.text.unicode == '\t') {
                 // TODO: Cantidad de espacios de tab una variable
-                input = "    ";
+                input = "  ";
             }
             textView.deleteSelections(document);
             textView.addTextInCursorPos(input, document);
