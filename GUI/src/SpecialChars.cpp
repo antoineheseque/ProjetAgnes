@@ -67,7 +67,10 @@ std::string convertSpecialChar(sf::Uint32 c, std::ofstream &outputFile) {
             return "ñ";
     }
     if (c < 128) {
-        return sf::String(c);
+        if (c == 13)
+          return "\n";
+        else
+          return sf::String(c);
     } else {
         outputFile.close();
         std::cerr << "\nERROR: Can't save character: " << c << std::endl;
