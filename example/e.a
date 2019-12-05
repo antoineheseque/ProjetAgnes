@@ -1,1 +1,11 @@
->>JSON(btc);
+>>"Entrez un nombre: ";
+<<nbr;
+
+/* Boucle */
+pour(i=-1;i<nbr;i=i+1){
+  
+  >>"Enchanté mr n";
+  >>i;
+  
+}
+/*>>JSON(btc)*/
