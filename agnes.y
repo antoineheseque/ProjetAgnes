@@ -42,6 +42,7 @@ extern int yyerror(char *);
 extern int yylex(void);
 void Div0Error(void);
 int GetJSON(string);
+int GetGraph(string);
 void UnknownVarError(string s);
 %}
 
@@ -69,7 +70,7 @@ void UnknownVarError(string s);
 %token FACT
 
 /* WEB */
-%token BTC URL HTML JSON LAUNCH
+%token BTC URL HTML JSON LAUNCH GRAPH
 
 /* Parentheses */
 %token LP RP /* ( ) */
@@ -137,7 +138,8 @@ web:
 ;
 
 print:
-  number  	  				              { type t; t.aDouble=0; ins(PRINT,t); }
+  BTC                               { type t; strcpy(t.aString,"\"https://api.blockchain.info/charts/market-price?format=json\""); ins(GRAPH,t); }
+  | number  	  				            { type t; t.aDouble=0; ins(PRINT,t); }
   | TEXT              	  			    { type t; strcpy(t.aString,$1); ins(TEXT,t); }
 ;
 
@@ -342,6 +344,10 @@ void start(){
         cout << convertText(ins.second.aString) << endl;
         ic++;
         break;
+      case GRAPH:
+        GetGraph(convertText(ins.second.aString));
+        ic++;
+        break;
       case URL:
         GetJSON(convertText(ins.second.aString));
         ic++;
@@ -414,75 +420,100 @@ namespace
     }
 }
 
-int GetJSON(string url)
+int GetGraph(string url)
 {
-
   CURL* curl = curl_easy_init();
-
-  // Set remote URL.
   curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-
-  // Don't bother trying IPv6, which would increase DNS resolution time.
   curl_easy_setopt(curl, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
-
-  // Don't wait forever, time out after 10 seconds.
   curl_easy_setopt(curl, CURLOPT_TIMEOUT, 10);
-
-  // Follow HTTP redirects if necessary.
   curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
-
-  // Response information.
   int httpCode(0);
   std::string* httpData(new std::string());
-  // Hook up data handling function.
   curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, callback);
-
-  // Hook up data container (will be passed as the last parameter to the
-  // callback handling function).  Can be any pointer type, since it will
-  // internally be passed as a void pointer.
   curl_easy_setopt(curl, CURLOPT_WRITEDATA, httpData);
-
-  // Run our HTTP GET command, capture the HTTP response code, and clean up.
   curl_easy_perform(curl);
   curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &httpCode);
-  //curl_easy_cleanup(curl); /// CECI CAUSE PROBLEME
-
   if (httpCode == 200)
   {
-      std::cout << "\nGot successful response from " << url << std::endl;
-
-      // Response looks good - done using Curl now.  Try to parse the results
-      // and print them out.
       Json::Value jsonData;
       Json::Reader jsonReader;
 
       if (jsonReader.parse(*httpData, jsonData))
       {
-          std::cout << "Successfully parsed JSON data" << std::endl;
-          std::cout << "\nJSON data received:" << std::endl;
-          std::cout << jsonData.toStyledString() << std::endl;
+          //cout << jsonData.toStyledString() << endl;
+          const string name(jsonData["name"].asString());
 
+          if(name=="Market Price (USD)"){
+            // BITCOIN
+            vector<double> x, y;
+            for(auto i : jsonData["values"]){
+              x.push_back(i["x"].asDouble());
+              y.push_back(i["y"].asDouble());
+              //cout << i["x"] << " | " << i["y"] << endl;
+            }
+            plt::xkcd();
+            plt::figure_size(1200, 780);
+            plt::plot(y);
+            plt::xlabel("Jours de l'annee derniere jusqu'a aujourd'hui");
+            plt::ylabel("Prix en $");
+            plt::grid(true);
+            plt::title("Courbe du Bitcoin sur 365 Jours (jusqu'a aujourd'hui)");
+            plt::show();
+          }
           /*const std::string dateString(jsonData["date"].asString());
-          const std::size_t unixTimeMs(
-                  jsonData["milliseconds_since_epoch"].asUInt64());
+          const std::size_t unixTimeMs(jsonData["milliseconds_since_epoch"].asUInt64());
           const std::string timeString(jsonData["time"].asString());
 
           std::cout << "Natively parsed:" << std::endl;
           std::cout << "\tDate string: " << dateString << std::endl;
           std::cout << "\tUnix timeMs: " << unixTimeMs << std::endl;
           std::cout << "\tTime string: " << timeString << std::endl;*/
-          std::cout << std::endl;
+          cout << endl;
       }
       else
       {
-          std::cout << "Could not parse HTTP data as JSON" << std::endl;
-          std::cout << "HTTP data was:\n" << *httpData << std::endl;
           return 1;
       }
   }
   else
   {
-      std::cout << "Couldn't GET from " << url << " - exiting" << std::endl;
+      return 1;
+  }
+
+  return 0;
+}
+
+int GetJSON(string url)
+{
+  CURL* curl = curl_easy_init();
+  curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+  curl_easy_setopt(curl, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
+  curl_easy_setopt(curl, CURLOPT_TIMEOUT, 10);
+  curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
+  int httpCode(0);
+  std::string* httpData(new std::string());
+  curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, callback);
+  curl_easy_setopt(curl, CURLOPT_WRITEDATA, httpData);
+  curl_easy_perform(curl);
+  curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &httpCode);
+  if (httpCode == 200)
+  {
+      Json::Value jsonData;
+      Json::Reader jsonReader;
+
+      if (jsonReader.parse(*httpData, jsonData))
+      {
+          cout << jsonData.toStyledString() << endl;
+      }
+      else
+      {
+          cout << *httpData << endl;
+          return 1;
+      }
+  }
+  else
+  {
+      std::cout << "Impossible de récupérer depuis l'url: " << url << std::endl;
       return 1;
   }
 
@@ -516,13 +547,6 @@ int main(int argc, char **argv) {
   start();
 
   fclose(file);
-
-  //plt::plot({1,3,2,4});
-  //plt::show();
-
-  //GetJSON("https://antoineh.tech/");
-  //https://api.blockchain.info/charts/market-price?format=json
-  // http://date.jsontest.com/
 
 
   /*sf::CircleShape shape(100.f);

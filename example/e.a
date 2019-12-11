@@ -8,4 +8,5 @@ pour(i=-1;i<nbr;i=i+1){
   >>i;
   
 }
-/*>>JSON(btc)*/
+/*>>HTML("https://antoineh.tech/");*/
+>>JSON(btc);
