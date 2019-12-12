@@ -114,3 +114,10 @@ Tant que(a<b){
   /* Instruction */
 }
 ```
+
+## V - Fonction Spéciale
+
+* Bitcoin
+```
+afficher btc;
+```
