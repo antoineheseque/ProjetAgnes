@@ -66,6 +66,9 @@ Ce langage est un langage mathématique, il vous permet de pouvoir automatiser c
 * Pour afficher une variable, un texte ou même un nombre :
   * `>>`
   * `afficher`
+  
+* Pour demander une entrée utilisateur :
+  * `<<`
 
 ## V - Conditions (IF)
 ### Conditions
